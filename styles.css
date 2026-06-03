@@ -720,34 +720,50 @@ h1 {
   margin: -14px -25px 0;
   overflow: hidden;
   padding: 0;
+  transform: translate3d(0, var(--choice-photo-shift, 0px), 0);
+  will-change: transform;
 }
 
 .marquee-track {
-  animation: marqueeSlide 32s linear infinite;
+  animation: marqueeSlide 56s linear infinite;
   display: flex;
-  gap: 15px;
+  gap: 0;
+  transform: translate3d(0, 0, 0);
   width: max-content;
+  will-change: transform;
 }
 
 .marquee-set {
   display: flex;
+  flex: 0 0 auto;
   gap: 15px;
+  padding-right: 15px;
 }
 
 .marquee figure {
   aspect-ratio: 613 / 744;
-  flex: 0 0 clamp(280px, 32vw, 613px);
+  flex: 0 0 clamp(280px, 30vw, 560px);
   margin: 0;
   overflow: hidden;
 }
 
+.marquee figure:first-child img {
+  object-position: center 42%;
+}
+
 @keyframes marqueeSlide {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
   }
 }
 
