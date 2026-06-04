@@ -151,6 +151,26 @@ function startMarquee() {
   marqueeFrame = scheduleAnimationFrame(renderMarquee);
 }
 
+function waitForMarqueeImages() {
+  if (!marqueeSet) {
+    return Promise.resolve();
+  }
+
+  const images = [...marqueeSet.querySelectorAll("img")];
+  const imagePromises = images.map((image) => {
+    if (image.complete && image.naturalWidth > 0) {
+      return image.decode ? image.decode().catch(() => undefined) : Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", resolve, { once: true });
+    }).then(() => (image.decode ? image.decode().catch(() => undefined) : undefined));
+  });
+
+  return Promise.allSettled(imagePromises);
+}
+
 drawerLinks.forEach((link, index) => link.style.setProperty("--drawer-i", index));
 
 ctaNodes.forEach((node) => {
@@ -215,7 +235,7 @@ window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
 window.addEventListener("resize", requestHeaderUpdate, { passive: true });
 
 if (marqueeTrack && marqueeSet) {
-  startMarquee();
+  waitForMarqueeImages().then(startMarquee);
   window.addEventListener("resize", measureMarquee, { passive: true });
   document.addEventListener("visibilitychange", () => {
     marqueeLastTime = null;
