@@ -18,6 +18,10 @@ const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 const scheduleAnimationFrame = window.requestAnimationFrame
   ? (callback) => window.requestAnimationFrame(callback)
   : (callback) => window.setTimeout(() => callback(window.performance?.now?.() || Date.now()), 16);
+const defaultRevealStagger = 42;
+const fastRevealStagger = 24;
+const defaultRevealDuration = 650;
+const fastRevealDuration = 430;
 let headerUpdateQueued = false;
 let marqueeSetWidth = 0;
 let marqueeOffset = 0;
@@ -305,6 +309,12 @@ if (detailStage && detailPhotos.length) {
 
 revealNodes.forEach((node) => {
   const words = node.textContent.trim().split(/\s+/);
+  const isFastReveal = node.closest(".about-intro-copy");
+
+  if (isFastReveal) {
+    node.classList.add("reveal-fast");
+  }
+
   node.textContent = "";
   words.forEach((word, index) => {
     const span = document.createElement("span");
@@ -321,7 +331,10 @@ function revealNode(node) {
 
 function getRevealDuration(node) {
   const wordCount = node.querySelectorAll(".word").length;
-  return Math.max((wordCount - 1) * 42 + 650, 900);
+  const stagger = node.classList.contains("reveal-fast") ? fastRevealStagger : defaultRevealStagger;
+  const duration = node.classList.contains("reveal-fast") ? fastRevealDuration : defaultRevealDuration;
+
+  return Math.max((wordCount - 1) * stagger + duration, 620);
 }
 
 if (isAboutPage) {

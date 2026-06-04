@@ -1513,6 +1513,11 @@ figure:hover img,
   transition-delay: calc(var(--i) * 42ms);
 }
 
+.reveal-fast .word {
+  transition-duration: 430ms;
+  transition-delay: calc(var(--i) * 24ms);
+}
+
 .is-revealed .word {
   filter: blur(0);
   opacity: 1;
