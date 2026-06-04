@@ -835,6 +835,10 @@ figure:hover img,
   max-width: 620px;
 }
 
+.story-link {
+  margin-top: 26px;
+}
+
 .hours-section {
   padding: 0 25px 0;
 }
