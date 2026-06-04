@@ -241,17 +241,6 @@ body.menu-open .menu-drawer {
   width: var(--nav-width);
 }
 
-body.menu-instant-close .menu-drawer,
-body.menu-instant-close .drawer-view,
-body.menu-instant-close .drawer-logo,
-body.menu-instant-close .drawer-links a,
-body.menu-instant-close .drawer-contact,
-body.menu-instant-close .drawer-socials,
-body.menu-instant-close .drawer-view-menu > p,
-body.menu-instant-close .menu-toggle span {
-  transition: none !important;
-}
-
 .drawer-view {
   display: grid;
   grid-template-rows: auto auto auto auto;

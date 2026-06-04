@@ -151,15 +151,6 @@ function closeDrawer() {
   updateToggleLabel();
 }
 
-function closeDrawerInstantly() {
-  document.body.classList.add("menu-instant-close");
-  closeDrawer();
-
-  window.setTimeout(() => {
-    document.body.classList.remove("menu-instant-close");
-  }, 80);
-}
-
 function updateHeader() {
   const rootStyle = document.documentElement.style;
   const heroProgress = Math.min(window.scrollY / Math.max(window.innerHeight, 1), 1);
@@ -230,8 +221,9 @@ drawerLinks.forEach((link) => {
       return;
     }
 
+    event.preventDefault();
     event.stopPropagation();
-    closeDrawerInstantly();
+    window.location.href = link.href;
   });
 });
 
