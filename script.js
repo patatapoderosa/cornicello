@@ -11,6 +11,7 @@ const detailPhotos = [...document.querySelectorAll(".details-photo")];
 const hoursGallery = document.querySelector("[data-hours-gallery]");
 const marqueeTrack = document.querySelector(".marquee-track");
 const marqueeSet = marqueeTrack?.querySelector(".marquee-set");
+const marqueeSets = marqueeTrack ? [...marqueeTrack.querySelectorAll(".marquee-set")] : [];
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
@@ -111,15 +112,29 @@ function updateHeader() {
 }
 
 function measureMarquee() {
-  if (!marqueeTrack || !marqueeSet) {
+  if (!marqueeTrack || !marqueeSets.length) {
     return;
   }
 
-  const setWidth = marqueeSet.getBoundingClientRect().width;
+  const setWidth = marqueeSets[0].getBoundingClientRect().width;
 
   if (setWidth > 0) {
-    marqueeOffset %= setWidth;
     marqueeWidth = setWidth;
+  }
+}
+
+function recycleMarqueeSets() {
+  if (!marqueeTrack || !marqueeWidth) {
+    return;
+  }
+
+  let firstSet = marqueeTrack.querySelector(".marquee-set");
+
+  while (firstSet && marqueeOffset >= marqueeWidth) {
+    marqueeOffset -= marqueeWidth;
+    marqueeTrack.append(firstSet);
+    firstSet = marqueeTrack.querySelector(".marquee-set");
+    marqueeWidth = firstSet?.getBoundingClientRect().width || marqueeWidth;
   }
 }
 
@@ -137,8 +152,9 @@ function renderMarquee(time) {
   const pixelsPerSecond = marqueeWidth / 76;
 
   marqueeLastTime = time;
-  marqueeOffset = (marqueeOffset + (delta / 1000) * pixelsPerSecond) % marqueeWidth;
-  marqueeTrack.style.transform = `translate3d(${-marqueeOffset}px, 0, 0)`;
+  marqueeOffset += (delta / 1000) * pixelsPerSecond;
+  recycleMarqueeSets();
+  marqueeTrack.style.transform = `translate3d(${-Math.round(marqueeOffset)}px, 0, 0)`;
   marqueeFrame = scheduleAnimationFrame(renderMarquee);
 }
 
