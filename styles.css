@@ -778,6 +778,7 @@ h1 {
 }
 
 .marquee-track {
+  animation: marqueeLoop 76s linear infinite;
   display: flex;
   gap: 0;
   transform: translate3d(0, 0, 0);
@@ -809,6 +810,22 @@ h1 {
 
 .marquee figure:nth-child(5) img {
   object-position: center 52%;
+}
+
+@keyframes marqueeLoop {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
 }
 
 .image-triptych,
