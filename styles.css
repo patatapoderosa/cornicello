@@ -771,6 +771,8 @@ h1 {
 }
 
 .marquee {
+  --marquee-duration: 76s;
+  --marquee-gap: 15px;
   margin: -14px calc(50% - 50vw) 0;
   overflow: hidden;
   padding: 0;
@@ -778,19 +780,19 @@ h1 {
 }
 
 .marquee-track {
-  animation: marqueeLoop 152s linear infinite;
   display: flex;
-  gap: 0;
+  gap: var(--marquee-gap);
   transform: translate3d(0, 0, 0);
   width: max-content;
   will-change: transform;
 }
 
 .marquee-set {
+  animation: marqueeLoop var(--marquee-duration) linear infinite;
   display: flex;
   flex: 0 0 auto;
-  gap: 15px;
-  padding-right: 15px;
+  gap: var(--marquee-gap);
+  will-change: transform;
 }
 
 .marquee figure {
@@ -818,12 +820,12 @@ h1 {
   }
 
   to {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(calc(-100% - var(--marquee-gap)), 0, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track {
+  .marquee-set {
     animation: none;
     transform: translate3d(0, 0, 0) !important;
   }
@@ -2167,13 +2169,9 @@ figure:hover img,
   }
 
   .marquee {
+    --marquee-gap: 10px;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
-  }
-
-  .marquee-set {
-    gap: 10px;
-    padding-right: 10px;
   }
 
   .marquee figure {
