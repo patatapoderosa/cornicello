@@ -285,22 +285,22 @@ body.menu-open .drawer-logo {
   font-size: clamp(31px, 3vw, 39px);
   filter: blur(12px);
   line-height: 1;
-  transform: translateY(16px);
+  transform: none;
   position: relative;
-  transition: color 220ms ease, filter 180ms ease, transform 180ms ease;
+  transition: color 220ms ease, filter 180ms ease;
 }
 
 body.menu-open .drawer-links a {
   filter: blur(0);
-  transform: translateY(0);
-  transition: filter 520ms ease, transform 520ms ease;
+  transform: none;
+  transition: filter 520ms ease;
   transition-delay: calc(var(--drawer-i, 0) * 70ms + 150ms);
 }
 
 .drawer-links a:hover {
   color: var(--gold);
   filter: blur(0);
-  transform: translateX(8px);
+  transform: none;
 }
 
 .drawer-links a::after {
@@ -548,6 +548,7 @@ h1 {
 .header-cta,
 .footer-cta {
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cta-control {
@@ -641,6 +642,53 @@ h1 {
 .button-light:hover .cta-icon::before,
 .text-link:hover .cta-icon::before {
   background-image: url("assets/outline-logo-red.png");
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cta-control:hover .cta-line-current,
+  .cta-control:active .cta-line-current {
+    transform: translateY(0);
+  }
+
+  .cta-control:hover .cta-line-hover,
+  .cta-control:active .cta-line-hover {
+    transform: translateY(115%);
+  }
+
+  .cta-control:hover .cta-icon,
+  .cta-control:active .cta-icon,
+  .button:hover,
+  .button:active,
+  .text-link:hover,
+  .text-link:active,
+  .footer-cta:hover,
+  .footer-cta:active {
+    transform: none;
+  }
+
+  .header-cta:hover,
+  .header-cta:active,
+  .menu-toggle:hover,
+  .menu-toggle:active {
+    background: transparent;
+    color: var(--white);
+    transform: none;
+  }
+
+  .button-light:hover,
+  .button-light:active,
+  .text-link:hover,
+  .text-link:active {
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .button-light:hover .cta-icon::before,
+  .button-light:active .cta-icon::before,
+  .text-link:hover .cta-icon::before,
+  .text-link:active .cta-icon::before {
+    background-image: url("assets/outline-logo-white.png");
+  }
 }
 
 .intro-section,
