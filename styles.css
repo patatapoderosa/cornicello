@@ -2170,7 +2170,6 @@ figure:hover img,
     margin-right: calc(50% - 50vw);
   }
 
-  .marquee-track,
   .marquee-set {
     gap: 10px;
   }
