@@ -788,7 +788,7 @@ h1 {
 .marquee-set {
   display: flex;
   flex: 0 0 auto;
-  gap: 0;
+  gap: 15px;
 }
 
 .marquee figure {
@@ -2159,7 +2159,7 @@ figure:hover img,
   }
 
   .marquee-set {
-    gap: 0;
+    gap: 10px;
   }
 
   .marquee figure {
