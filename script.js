@@ -22,7 +22,6 @@ let headerUpdateQueued = false;
 let marqueeSetWidth = 0;
 let marqueeOffset = 0;
 let marqueeLastTime = null;
-const drawerCloseDelay = 620;
 
 function getMarqueeSpeed() {
   return window.matchMedia("(max-width: 900px)").matches ? 24 : 34;
@@ -148,6 +147,15 @@ function closeDrawer() {
   updateToggleLabel();
 }
 
+function closeDrawerInstantly() {
+  document.body.classList.add("menu-instant-close");
+  closeDrawer();
+
+  window.setTimeout(() => {
+    document.body.classList.remove("menu-instant-close");
+  }, 80);
+}
+
 function updateHeader() {
   const rootStyle = document.documentElement.style;
   const heroProgress = Math.min(window.scrollY / Math.max(window.innerHeight, 1), 1);
@@ -214,19 +222,12 @@ toggle.addEventListener("click", () => {
 
 drawerLinks.forEach((link) => {
   link.addEventListener("click", (event) => {
-    const href = link.getAttribute("href");
-
-    if (!href || link.target === "_blank" || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+    if (link.target === "_blank" || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
       return;
     }
 
-    event.preventDefault();
     event.stopPropagation();
-    closeDrawer();
-
-    window.setTimeout(() => {
-      window.location.href = link.href;
-    }, drawerCloseDelay);
+    closeDrawerInstantly();
   });
 });
 
