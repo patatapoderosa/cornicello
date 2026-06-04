@@ -724,7 +724,6 @@ h1 {
 }
 
 .marquee-track {
-  animation: marqueeSlide 68s linear infinite;
   display: flex;
   gap: 0;
   transform: translate3d(0, 0, 0);
@@ -756,22 +755,6 @@ h1 {
 
 .marquee figure:nth-child(5) img {
   object-position: center 52%;
-}
-
-@keyframes marqueeSlide {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: translate3d(-33.333333%, 0, 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
 }
 
 .image-triptych,
@@ -2125,8 +2108,7 @@ figure:hover img,
     object-position: center;
   }
 
-  .marquee figure:first-child img,
-  .marquee figure:nth-child(7) img {
+  .marquee figure:first-child img {
     object-position: center 40%;
   }
 
