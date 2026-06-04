@@ -720,8 +720,6 @@ h1 {
   margin: -14px -25px 0;
   overflow: hidden;
   padding: 0;
-  transform: translate3d(0, var(--choice-photo-shift, 0px), 0);
-  will-change: transform;
 }
 
 .marquee-track {

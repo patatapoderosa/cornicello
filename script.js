@@ -9,50 +9,10 @@ const drawerLinks = [...document.querySelectorAll(".drawer-links a")];
 const detailStage = document.querySelector("[data-detail-stage]");
 const detailPhotos = [...document.querySelectorAll(".details-photo")];
 const hoursGallery = document.querySelector("[data-hours-gallery]");
-const choicePhoto = document.querySelector("[data-choice-photo]");
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
-const canUseSmoothScroll = () =>
-  window.matchMedia("(min-width: 901px)").matches &&
-  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
 let headerUpdateQueued = false;
-let smoothScrollTarget = window.scrollY;
-let smoothScrollCurrent = window.scrollY;
-let smoothScrollFrame = null;
-let isSmoothScrollUpdate = false;
-
-function getMaxScroll() {
-  return Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
-}
-
-function clampScroll(value) {
-  return Math.min(Math.max(value, 0), getMaxScroll());
-}
-
-function animateSmoothScroll() {
-  const distance = smoothScrollTarget - smoothScrollCurrent;
-
-  if (Math.abs(distance) < 0.6) {
-    smoothScrollCurrent = smoothScrollTarget;
-    smoothScrollFrame = null;
-  } else {
-    smoothScrollCurrent += distance * 0.18;
-    smoothScrollFrame = requestAnimationFrame(animateSmoothScroll);
-  }
-
-  isSmoothScrollUpdate = true;
-  window.scrollTo(0, smoothScrollCurrent);
-  isSmoothScrollUpdate = false;
-}
-
-function queueSmoothScroll(deltaY) {
-  smoothScrollTarget = clampScroll(smoothScrollTarget + deltaY * 0.82);
-
-  if (!smoothScrollFrame) {
-    smoothScrollFrame = requestAnimationFrame(animateSmoothScroll);
-  }
-}
 
 function requestHeaderUpdate() {
   if (headerUpdateQueued) {
@@ -123,15 +83,6 @@ function updateHeader() {
     detailStage.style.setProperty("--detail-shift", "0px");
   }
 
-  if (choicePhoto && canAnimatePhotos()) {
-    const rect = choicePhoto.getBoundingClientRect();
-    const travel = window.innerHeight + rect.height;
-    const progress = Math.min(Math.max((window.innerHeight - rect.top) / travel, 0), 1);
-    choicePhoto.style.setProperty("--choice-photo-shift", `${(progress - 0.5) * -22}px`);
-  } else if (choicePhoto) {
-    choicePhoto.style.setProperty("--choice-photo-shift", "0px");
-  }
-
   if (hoursGallery && canAnimatePhotos()) {
     const rect = hoursGallery.getBoundingClientRect();
     const start = window.innerHeight * 0.72;
@@ -196,30 +147,6 @@ if (newsletter) {
 updateHeader();
 window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
 window.addEventListener("resize", requestHeaderUpdate, { passive: true });
-
-window.addEventListener(
-  "wheel",
-  (event) => {
-    if (!canUseSmoothScroll() || event.ctrlKey || event.metaKey) {
-      return;
-    }
-
-    event.preventDefault();
-    queueSmoothScroll(event.deltaY);
-  },
-  { passive: false }
-);
-
-window.addEventListener(
-  "scroll",
-  () => {
-    if (!isSmoothScrollUpdate || !canUseSmoothScroll()) {
-      smoothScrollCurrent = window.scrollY;
-      smoothScrollTarget = window.scrollY;
-    }
-  },
-  { passive: true }
-);
 
 if (detailStage && detailPhotos.length) {
   detailStage.addEventListener("pointermove", (event) => {
