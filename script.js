@@ -15,6 +15,9 @@ const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
 const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+const scheduleAnimationFrame = window.requestAnimationFrame
+  ? (callback) => window.requestAnimationFrame(callback)
+  : (callback) => window.setTimeout(() => callback(window.performance?.now?.() || Date.now()), 16);
 let headerUpdateQueued = false;
 let marqueeSetWidth = 0;
 let marqueeOffset = 0;
@@ -61,7 +64,7 @@ function rebuildMarquee() {
 function animateMarquee(time) {
   if (!marqueeTrack || !marqueeSetWidth || reduceMotionQuery.matches) {
     marqueeLastTime = time;
-    requestAnimationFrame(animateMarquee);
+    scheduleAnimationFrame(animateMarquee);
     return;
   }
 
@@ -78,7 +81,7 @@ function animateMarquee(time) {
   }
 
   marqueeTrack.style.transform = `translate3d(${marqueeOffset}px, 0, 0)`;
-  requestAnimationFrame(animateMarquee);
+  scheduleAnimationFrame(animateMarquee);
 }
 
 function requestHeaderUpdate() {
@@ -87,7 +90,7 @@ function requestHeaderUpdate() {
   }
 
   headerUpdateQueued = true;
-  requestAnimationFrame(() => {
+  scheduleAnimationFrame(() => {
     headerUpdateQueued = false;
     updateHeader();
   });
@@ -225,7 +228,7 @@ if (marquee && marqueeTrack) {
     }
 
     marqueeResizeQueued = true;
-    requestAnimationFrame(() => {
+    scheduleAnimationFrame(() => {
       marqueeResizeQueued = false;
       rebuildMarquee();
     });
@@ -244,7 +247,7 @@ if (marquee && marqueeTrack) {
   } else {
     reduceMotionQuery.addListener(requestMarqueeRebuild);
   }
-  requestAnimationFrame(animateMarquee);
+  scheduleAnimationFrame(animateMarquee);
 }
 
 if (detailStage && detailPhotos.length) {
