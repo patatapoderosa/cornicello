@@ -294,7 +294,6 @@ body.menu-open .drawer-links a {
   filter: blur(0);
   transform: none;
   transition: color 220ms ease;
-  transition-delay: calc(var(--drawer-i, 0) * 70ms + 150ms);
 }
 
 .drawer-links a:hover {
