@@ -283,17 +283,17 @@ body.menu-open .drawer-logo {
   display: block;
   font-family: var(--gilda);
   font-size: clamp(31px, 3vw, 39px);
-  filter: blur(12px);
+  filter: blur(0);
   line-height: 1;
   transform: none;
   position: relative;
-  transition: color 220ms ease, filter 180ms ease;
+  transition: color 220ms ease;
 }
 
 body.menu-open .drawer-links a {
   filter: blur(0);
   transform: none;
-  transition: filter 520ms ease;
+  transition: color 220ms ease;
   transition-delay: calc(var(--drawer-i, 0) * 70ms + 150ms);
 }
 
@@ -673,6 +673,11 @@ h1 {
     background: transparent;
     color: var(--white);
     transform: none;
+  }
+
+  .header-cta:hover .cta-icon::before,
+  .header-cta:active .cta-icon::before {
+    background-image: url("assets/outline-logo-white.png");
   }
 
   .button-light:hover,
