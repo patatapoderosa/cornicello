@@ -22,6 +22,7 @@ let headerUpdateQueued = false;
 let marqueeSetWidth = 0;
 let marqueeOffset = 0;
 let marqueeLastTime = null;
+const drawerCloseDelay = 620;
 
 function getMarqueeSpeed() {
   return window.matchMedia("(max-width: 900px)").matches ? 24 : 34;
@@ -47,7 +48,7 @@ function rebuildMarquee() {
   }
 
   const marqueeWidth = marquee.getBoundingClientRect().width;
-  const targetWidth = Math.max(marqueeWidth * 2.5, marqueeWidth + marqueeSetWidth * 2);
+  const targetWidth = Math.max(marqueeWidth * 4, marqueeWidth + marqueeSetWidth * 4);
   let renderedWidth = marqueeSetWidth;
 
   while (renderedWidth < targetWidth) {
@@ -57,7 +58,14 @@ function rebuildMarquee() {
     renderedWidth += marqueeSetWidth;
   }
 
-  marqueeOffset %= marqueeSetWidth;
+  while (marqueeOffset <= -marqueeSetWidth) {
+    marqueeOffset += marqueeSetWidth;
+  }
+
+  while (marqueeOffset > 0) {
+    marqueeOffset -= marqueeSetWidth;
+  }
+
   marqueeTrack.style.transform = `translate3d(${marqueeOffset}px, 0, 0)`;
 }
 
@@ -76,8 +84,12 @@ function animateMarquee(time) {
   marqueeLastTime = time;
   marqueeOffset -= delta * getMarqueeSpeed();
 
-  if (Math.abs(marqueeOffset) >= marqueeSetWidth) {
+  while (marqueeOffset <= -marqueeSetWidth) {
     marqueeOffset += marqueeSetWidth;
+  }
+
+  while (marqueeOffset > 0) {
+    marqueeOffset -= marqueeSetWidth;
   }
 
   marqueeTrack.style.transform = `translate3d(${marqueeOffset}px, 0, 0)`;
@@ -200,8 +212,26 @@ toggle.addEventListener("click", () => {
   openDrawer();
 });
 
+drawerLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    const href = link.getAttribute("href");
+
+    if (!href || link.target === "_blank" || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    closeDrawer();
+
+    window.setTimeout(() => {
+      window.location.href = link.href;
+    }, drawerCloseDelay);
+  });
+});
+
 document.addEventListener("click", (event) => {
-  if (event.target.closest("a")) {
+  if (event.target.closest("a") && !event.target.closest(".drawer-links a")) {
     closeDrawer();
   }
 });
