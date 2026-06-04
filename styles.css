@@ -717,13 +717,14 @@ h1 {
 }
 
 .marquee {
-  margin: -14px -25px 0;
+  margin: -14px calc(50% - 50vw) 0;
   overflow: hidden;
   padding: 0;
+  width: 100vw;
 }
 
 .marquee-track {
-  animation: marqueeSlide 56s linear infinite;
+  animation: marqueeSlide 68s linear infinite;
   display: flex;
   gap: 0;
   transform: translate3d(0, 0, 0);
@@ -749,13 +750,21 @@ h1 {
   object-position: center 42%;
 }
 
+.marquee figure:nth-child(2) img {
+  object-position: center 58%;
+}
+
+.marquee figure:nth-child(5) img {
+  object-position: center 52%;
+}
+
 @keyframes marqueeSlide {
   from {
     transform: translate3d(0, 0, 0);
   }
 
   to {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(-33.333333%, 0, 0);
   }
 }
 
@@ -2093,8 +2102,32 @@ figure:hover img,
     min-width: min(260px, 80vw);
   }
 
+  .marquee {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  .marquee-track,
+  .marquee-set {
+    gap: 10px;
+  }
+
+  .marquee-set {
+    padding-right: 10px;
+  }
+
   .marquee figure {
-    flex-basis: 74vw;
+    aspect-ratio: 4 / 5;
+    flex-basis: min(82vw, 390px);
+  }
+
+  .marquee img {
+    object-position: center;
+  }
+
+  .marquee figure:first-child img,
+  .marquee figure:nth-child(7) img {
+    object-position: center 40%;
   }
 
   .story-panel {
@@ -2527,7 +2560,7 @@ figure:hover img,
 
   .bottom-grid[data-hours-gallery] {
     display: block;
-    height: clamp(720px, 178vw, 920px);
+    height: min(118vw, 560px);
     margin: 0 -16px;
     overflow: hidden;
     position: relative;
@@ -2563,7 +2596,25 @@ figure:hover img,
   .bottom-grid[data-hours-gallery] img {
     height: 100%;
     object-fit: cover;
+    object-position: center;
     width: 100%;
+  }
+
+  .bottom-grid[data-hours-gallery] figure:first-child img {
+    object-position: center 45%;
+  }
+
+  .bottom-grid[data-hours-gallery] figure:nth-child(2) img,
+  .bottom-grid[data-hours-gallery] figure:nth-child(3) img {
+    object-position: center 42%;
+  }
+}
+
+@media (max-width: 520px) {
+  .bottom-grid[data-hours-gallery] {
+    height: min(124vw, 500px);
+    margin-left: -18px;
+    margin-right: -18px;
   }
 }
 
