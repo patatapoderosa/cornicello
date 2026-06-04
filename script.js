@@ -319,6 +319,11 @@ function revealNode(node) {
   node.classList.add("is-revealed");
 }
 
+function getRevealDuration(node) {
+  const wordCount = node.querySelectorAll(".word").length;
+  return Math.max((wordCount - 1) * 42 + 650, 900);
+}
+
 if (isAboutPage) {
   const groupMap = new Map();
   const revealGroups = [];
@@ -345,8 +350,25 @@ if (isAboutPage) {
     isRevealingGroup = true;
     const group = revealQueue.shift();
     group.revealed = true;
-    group.nodes.forEach(revealNode);
     revealObserver.unobserve(group.root);
+
+    if (group.root.classList.contains("about-intro")) {
+      const introCopy = group.root.querySelector(".about-intro-copy");
+      const introNodes = group.nodes.filter((node) => introCopy?.contains(node));
+      const secondParagraph = introCopy?.querySelector("p:nth-of-type(2)");
+      const primaryNodes = introNodes.filter((node) => node !== secondParagraph);
+      const trailingNodes = group.nodes.filter((node) => !primaryNodes.includes(node) && node !== secondParagraph);
+      const primaryDuration = Math.max(...primaryNodes.map(getRevealDuration), 900);
+
+      primaryNodes.forEach(revealNode);
+      trailingNodes.forEach(revealNode);
+
+      if (secondParagraph) {
+        window.setTimeout(() => revealNode(secondParagraph), primaryDuration);
+      }
+    } else {
+      group.nodes.forEach(revealNode);
+    }
 
     window.setTimeout(() => {
       isRevealingGroup = false;
