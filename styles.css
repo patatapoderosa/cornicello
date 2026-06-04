@@ -795,6 +795,10 @@ h1 {
   will-change: transform;
 }
 
+.marquee-gsap .marquee-set {
+  animation: none;
+}
+
 .marquee figure {
   aspect-ratio: 613 / 744;
   flex: 0 0 clamp(280px, 30vw, 560px);

@@ -9,6 +9,9 @@ const drawerLinks = [...document.querySelectorAll(".drawer-links a")];
 const detailStage = document.querySelector("[data-detail-stage]");
 const detailPhotos = [...document.querySelectorAll(".details-photo")];
 const hoursGallery = document.querySelector("[data-hours-gallery]");
+const marquee = document.querySelector(".marquee-gsap");
+const marqueeTrack = marquee?.querySelector(".marquee-track");
+const marqueeSets = marquee ? [...marquee.querySelectorAll(".marquee-set")] : [];
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
@@ -104,6 +107,55 @@ function updateHeader() {
 
 }
 
+function waitForImages(images) {
+  const imagePromises = images.map((image) => {
+    if (image.complete && image.naturalWidth > 0) {
+      return image.decode ? image.decode().catch(() => undefined) : Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      image.addEventListener("load", resolve, { once: true });
+      image.addEventListener("error", resolve, { once: true });
+    }).then(() => (image.decode ? image.decode().catch(() => undefined) : undefined));
+  });
+
+  return Promise.allSettled(imagePromises);
+}
+
+function startGsapMarquee() {
+  if (!marquee || !marqueeTrack || marqueeSets.length < 2 || !window.gsap || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  let tween;
+
+  const buildTween = () => {
+    const firstRect = marqueeSets[0].getBoundingClientRect();
+    const secondRect = marqueeSets[1].getBoundingClientRect();
+    const distance = Math.round(secondRect.left - firstRect.left);
+
+    if (distance <= 0) {
+      return;
+    }
+
+    if (tween) {
+      tween.kill();
+    }
+
+    window.gsap.set(marqueeTrack, { force3D: true, x: 0 });
+    tween = window.gsap.to(marqueeTrack, {
+      duration: 76,
+      ease: "none",
+      force3D: true,
+      repeat: -1,
+      x: -distance,
+    });
+  };
+
+  waitForImages([...marqueeSets[0].querySelectorAll("img")]).then(buildTween);
+  window.addEventListener("resize", buildTween, { passive: true });
+}
+
 drawerLinks.forEach((link, index) => link.style.setProperty("--drawer-i", index));
 
 ctaNodes.forEach((node) => {
@@ -164,6 +216,7 @@ if (newsletter) {
 }
 
 updateHeader();
+startGsapMarquee();
 window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
 window.addEventListener("resize", requestHeaderUpdate, { passive: true });
 
