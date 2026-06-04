@@ -778,6 +778,7 @@ h1 {
 }
 
 .marquee-track {
+  --marquee-shift: -25%;
   animation: marqueeLoop 76s linear infinite;
   display: flex;
   gap: 0;
@@ -818,7 +819,7 @@ h1 {
   }
 
   to {
-    transform: translate3d(-25%, 0, 0);
+    transform: translate3d(var(--marquee-shift), 0, 0);
   }
 }
 

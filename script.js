@@ -9,6 +9,8 @@ const drawerLinks = [...document.querySelectorAll(".drawer-links a")];
 const detailStage = document.querySelector("[data-detail-stage]");
 const detailPhotos = [...document.querySelectorAll(".details-photo")];
 const hoursGallery = document.querySelector("[data-hours-gallery]");
+const marqueeTrack = document.querySelector(".marquee-track");
+const marqueeSet = marqueeTrack?.querySelector(".marquee-set");
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
@@ -104,6 +106,18 @@ function updateHeader() {
 
 }
 
+function updateMarqueeShift() {
+  if (!marqueeTrack || !marqueeSet) {
+    return;
+  }
+
+  const setWidth = marqueeSet.getBoundingClientRect().width;
+
+  if (setWidth > 0) {
+    marqueeTrack.style.setProperty("--marquee-shift", `${-setWidth}px`);
+  }
+}
+
 drawerLinks.forEach((link, index) => link.style.setProperty("--drawer-i", index));
 
 ctaNodes.forEach((node) => {
@@ -166,6 +180,16 @@ if (newsletter) {
 updateHeader();
 window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
 window.addEventListener("resize", requestHeaderUpdate, { passive: true });
+
+if (marqueeTrack && marqueeSet) {
+  updateMarqueeShift();
+  window.addEventListener("resize", updateMarqueeShift, { passive: true });
+  marqueeSet.querySelectorAll("img").forEach((image) => {
+    if (!image.complete) {
+      image.addEventListener("load", updateMarqueeShift, { once: true });
+    }
+  });
+}
 
 if (detailStage && detailPhotos.length) {
   detailStage.addEventListener("pointermove", (event) => {
