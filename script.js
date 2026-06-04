@@ -9,9 +9,6 @@ const drawerLinks = [...document.querySelectorAll(".drawer-links a")];
 const detailStage = document.querySelector("[data-detail-stage]");
 const detailPhotos = [...document.querySelectorAll(".details-photo")];
 const hoursGallery = document.querySelector("[data-hours-gallery]");
-const marqueeTrack = document.querySelector(".marquee-track");
-const marqueeSet = marqueeTrack?.querySelector(".marquee-set");
-const marqueeSets = marqueeTrack ? [...marqueeTrack.querySelectorAll(".marquee-set")] : [];
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
@@ -23,10 +20,6 @@ const fastRevealStagger = 24;
 const defaultRevealDuration = 650;
 const fastRevealDuration = 430;
 let headerUpdateQueued = false;
-let marqueeWidth = 0;
-let marqueeOffset = 0;
-let marqueeLastTime = null;
-let marqueeFrame = null;
 
 function requestHeaderUpdate() {
   if (headerUpdateQueued) {
@@ -111,82 +104,6 @@ function updateHeader() {
 
 }
 
-function measureMarquee() {
-  if (!marqueeTrack || !marqueeSets.length) {
-    return;
-  }
-
-  const setWidth = marqueeSets[0].getBoundingClientRect().width;
-
-  if (setWidth > 0) {
-    marqueeWidth = setWidth;
-  }
-}
-
-function recycleMarqueeSets() {
-  if (!marqueeTrack || !marqueeWidth) {
-    return;
-  }
-
-  let firstSet = marqueeTrack.querySelector(".marquee-set");
-
-  while (firstSet && marqueeOffset >= marqueeWidth) {
-    marqueeOffset -= marqueeWidth;
-    marqueeTrack.append(firstSet);
-    firstSet = marqueeTrack.querySelector(".marquee-set");
-    marqueeWidth = firstSet?.getBoundingClientRect().width || marqueeWidth;
-  }
-}
-
-function renderMarquee(time) {
-  if (!marqueeTrack || !marqueeWidth) {
-    marqueeFrame = scheduleAnimationFrame(renderMarquee);
-    return;
-  }
-
-  if (marqueeLastTime === null) {
-    marqueeLastTime = time;
-  }
-
-  const delta = Math.min(time - marqueeLastTime, 64);
-  const pixelsPerSecond = marqueeWidth / 76;
-
-  marqueeLastTime = time;
-  marqueeOffset += (delta / 1000) * pixelsPerSecond;
-  recycleMarqueeSets();
-  marqueeTrack.style.transform = `translate3d(${-Math.round(marqueeOffset)}px, 0, 0)`;
-  marqueeFrame = scheduleAnimationFrame(renderMarquee);
-}
-
-function startMarquee() {
-  if (!marqueeTrack || !marqueeSet || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return;
-  }
-
-  measureMarquee();
-  marqueeFrame = scheduleAnimationFrame(renderMarquee);
-}
-
-function waitForMarqueeImages() {
-  if (!marqueeSet) {
-    return Promise.resolve();
-  }
-
-  const images = [...marqueeSet.querySelectorAll("img")];
-  const imagePromises = images.map((image) => {
-    if (image.complete && image.naturalWidth > 0) {
-      return image.decode ? image.decode().catch(() => undefined) : Promise.resolve();
-    }
-
-    return new Promise((resolve) => {
-      image.addEventListener("load", resolve, { once: true });
-      image.addEventListener("error", resolve, { once: true });
-    }).then(() => (image.decode ? image.decode().catch(() => undefined) : undefined));
-  });
-
-  return Promise.allSettled(imagePromises);
-}
-
 drawerLinks.forEach((link, index) => link.style.setProperty("--drawer-i", index));
 
 ctaNodes.forEach((node) => {
@@ -249,19 +166,6 @@ if (newsletter) {
 updateHeader();
 window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
 window.addEventListener("resize", requestHeaderUpdate, { passive: true });
-
-if (marqueeTrack && marqueeSet) {
-  waitForMarqueeImages().then(startMarquee);
-  window.addEventListener("resize", measureMarquee, { passive: true });
-  document.addEventListener("visibilitychange", () => {
-    marqueeLastTime = null;
-  });
-  marqueeSet.querySelectorAll("img").forEach((image) => {
-    if (!image.complete) {
-      image.addEventListener("load", measureMarquee, { once: true });
-    }
-  });
-}
 
 if (detailStage && detailPhotos.length) {
   detailStage.addEventListener("pointermove", (event) => {
