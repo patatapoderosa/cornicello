@@ -772,14 +772,14 @@ h1 {
 
 .marquee {
   --marquee-gap: 0px;
-  margin: -14px calc(50% - 50vw) 0;
+  margin: -14px -25px 0;
   overflow: hidden;
   padding: 0;
-  width: 100vw;
+  width: auto;
 }
 
 .marquee-track {
-  display: flex;
+  display: inline-flex;
   gap: var(--marquee-gap);
   transform: translate3d(0, 0, 0);
   width: max-content;
@@ -2157,8 +2157,8 @@ figure:hover img,
 
   .marquee {
     --marquee-gap: 0px;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
+    margin-left: -16px;
+    margin-right: -16px;
   }
 
   .marquee figure {

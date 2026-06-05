@@ -127,15 +127,39 @@ function startGsapMarquee() {
     return;
   }
 
-  let tween;
   const pixelsPerSecond = 45;
+  let offset = 0;
+  let lastTime = null;
+  let ticker;
 
-  const buildTween = () => {
-    if (tween) {
-      tween.kill();
+  const getFirstSetWidth = () => {
+    const firstSet = marqueeTrack.firstElementChild;
+
+    if (!firstSet) {
+      return 0;
     }
 
-    window.gsap.set(marqueeTrack, { x: 0 });
+    return firstSet.getBoundingClientRect().width;
+  };
+
+  const recycleSets = () => {
+    let firstSetWidth = getFirstSetWidth();
+
+    while (firstSetWidth > 0 && offset >= firstSetWidth) {
+      offset -= firstSetWidth;
+      marqueeTrack.append(marqueeTrack.firstElementChild);
+      firstSetWidth = getFirstSetWidth();
+    }
+  };
+
+  const buildLoop = () => {
+    if (ticker) {
+      window.gsap.ticker.remove(ticker);
+    }
+
+    offset = 0;
+    lastTime = null;
+    window.gsap.set(marqueeTrack, { force3D: true, x: 0 });
     marqueeTrack.querySelectorAll("[data-marquee-clone]").forEach((clone) => clone.remove());
 
     const sourceWidth = marqueeSet.getBoundingClientRect().width;
@@ -151,27 +175,24 @@ function startGsapMarquee() {
       marqueeTrack.append(clone);
     }
 
-    const firstRect = marqueeSet.getBoundingClientRect();
-    const secondSet = marqueeTrack.querySelector("[data-marquee-clone]");
-    const secondRect = secondSet?.getBoundingClientRect();
-    const distance = Math.round((secondRect?.left || 0) - firstRect.left);
+    ticker = (time) => {
+      if (lastTime === null) {
+        lastTime = time;
+      }
 
-    if (distance <= 0) {
-      return;
-    }
+      const delta = Math.min(time - lastTime, 0.064);
 
-    window.gsap.set(marqueeTrack, { force3D: true, x: 0 });
-    tween = window.gsap.to(marqueeTrack, {
-      duration: distance / pixelsPerSecond,
-      ease: "none",
-      force3D: true,
-      repeat: -1,
-      x: -distance,
-    });
+      lastTime = time;
+      offset += delta * pixelsPerSecond;
+      recycleSets();
+      window.gsap.set(marqueeTrack, { x: -Math.round(offset) });
+    };
+
+    window.gsap.ticker.add(ticker);
   };
 
-  waitForImages([...marqueeSet.querySelectorAll("img")]).then(buildTween);
-  window.addEventListener("resize", buildTween, { passive: true });
+  waitForImages([...marqueeSet.querySelectorAll("img")]).then(buildLoop);
+  window.addEventListener("resize", buildLoop, { passive: true });
 }
 
 drawerLinks.forEach((link, index) => link.style.setProperty("--drawer-i", index));
