@@ -185,7 +185,7 @@ function startGsapMarquee() {
       lastTime = time;
       offset += delta * pixelsPerSecond;
       recycleSets();
-      window.gsap.set(marqueeTrack, { x: -Math.round(offset) });
+      window.gsap.set(marqueeTrack, { transform: `translate3d(${-Math.round(offset)}px, 0, 0)` });
     };
 
     window.gsap.ticker.add(ticker);
@@ -193,6 +193,7 @@ function startGsapMarquee() {
 
   waitForImages([...marqueeSet.querySelectorAll("img")]).then(buildLoop);
   window.addEventListener("resize", buildLoop, { passive: true });
+  window.addEventListener("load", buildLoop, { once: true });
 }
 
 drawerLinks.forEach((link, index) => link.style.setProperty("--drawer-i", index));
