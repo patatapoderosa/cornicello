@@ -771,8 +771,7 @@ h1 {
 }
 
 .marquee {
-  --marquee-duration: 76s;
-  --marquee-gap: 15px;
+  --marquee-gap: 0px;
   margin: -14px calc(50% - 50vw) 0;
   overflow: hidden;
   padding: 0;
@@ -788,15 +787,10 @@ h1 {
 }
 
 .marquee-set {
-  animation: marqueeLoop var(--marquee-duration) linear infinite;
   display: flex;
   flex: 0 0 auto;
   gap: var(--marquee-gap);
   will-change: transform;
-}
-
-.marquee-gsap .marquee-set {
-  animation: none;
 }
 
 .marquee figure {
@@ -818,19 +812,8 @@ h1 {
   object-position: center 52%;
 }
 
-@keyframes marqueeLoop {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: translate3d(calc(-100% - var(--marquee-gap)), 0, 0);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .marquee-set {
-    animation: none;
+  .marquee-track {
     transform: translate3d(0, 0, 0) !important;
   }
 }
@@ -2173,7 +2156,7 @@ figure:hover img,
   }
 
   .marquee {
-    --marquee-gap: 10px;
+    --marquee-gap: 0px;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
   }
