@@ -132,23 +132,24 @@ function startGsapMarquee() {
   let lastTime = null;
   let ticker;
 
-  const getFirstSetWidth = () => {
+  const getCycleWidth = () => {
     const firstSet = marqueeTrack.firstElementChild;
+    const secondSet = firstSet?.nextElementSibling;
 
-    if (!firstSet) {
+    if (!firstSet || !secondSet) {
       return 0;
     }
 
-    return firstSet.getBoundingClientRect().width;
+    return secondSet.getBoundingClientRect().left - firstSet.getBoundingClientRect().left;
   };
 
   const recycleSets = () => {
-    let firstSetWidth = getFirstSetWidth();
+    let cycleWidth = getCycleWidth();
 
-    while (firstSetWidth > 0 && offset >= firstSetWidth) {
-      offset -= firstSetWidth;
+    while (cycleWidth > 0 && offset >= cycleWidth) {
+      offset -= cycleWidth;
       marqueeTrack.append(marqueeTrack.firstElementChild);
-      firstSetWidth = getFirstSetWidth();
+      cycleWidth = getCycleWidth();
     }
   };
 
@@ -168,11 +169,23 @@ function startGsapMarquee() {
       return;
     }
 
-    while (marqueeTrack.getBoundingClientRect().width < marquee.clientWidth + sourceWidth * 2) {
+    const addClone = () => {
       const clone = marqueeSet.cloneNode(true);
       clone.setAttribute("data-marquee-clone", "true");
       clone.setAttribute("aria-hidden", "true");
       marqueeTrack.append(clone);
+    };
+
+    addClone();
+
+    const cycleWidth = getCycleWidth();
+
+    if (cycleWidth <= 0) {
+      return;
+    }
+
+    while (marqueeTrack.getBoundingClientRect().width < marquee.clientWidth + sourceWidth * 2) {
+      addClone();
     }
 
     ticker = (time) => {
@@ -185,7 +198,7 @@ function startGsapMarquee() {
       lastTime = time;
       offset += delta * pixelsPerSecond;
       recycleSets();
-      window.gsap.set(marqueeTrack, { transform: `translate3d(${-Math.round(offset)}px, 0, 0)` });
+      window.gsap.set(marqueeTrack, { force3D: true, x: -Math.round(offset) });
     };
 
     window.gsap.ticker.add(ticker);

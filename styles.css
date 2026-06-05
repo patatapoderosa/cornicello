@@ -781,8 +781,10 @@ h1 {
 .marquee-track {
   display: inline-flex;
   gap: var(--marquee-gap);
+  max-width: none;
+  min-width: max-content;
   transform: translate3d(0, 0, 0);
-  width: max-content;
+  width: auto;
   will-change: transform;
 }
 
