@@ -9,9 +9,6 @@ const drawerLinks = [...document.querySelectorAll(".drawer-links a")];
 const detailStage = document.querySelector("[data-detail-stage]");
 const detailPhotos = [...document.querySelectorAll(".details-photo")];
 const hoursGallery = document.querySelector("[data-hours-gallery]");
-const marquee = document.querySelector(".marquee");
-const marqueeTrack = marquee?.querySelector(".marquee-track");
-const marqueeSourceSet = marqueeTrack?.querySelector(".marquee-set");
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
@@ -107,99 +104,6 @@ function updateHeader() {
 
 }
 
-function startMarquee() {
-  if (!marquee || !marqueeTrack || !marqueeSourceSet || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return;
-  }
-
-  const pixelsPerSecond = 45;
-  let offset = 0;
-  let cycleWidth = 0;
-  let lastTime = 0;
-  let frameId = 0;
-  let resizeTimer = 0;
-
-  const waitForMarqueeImages = () => {
-    const images = [...marqueeSourceSet.querySelectorAll("img")];
-
-    return Promise.allSettled(images.map((image) => {
-      if (image.complete && image.naturalWidth > 0) {
-        return image.decode ? image.decode().catch(() => undefined) : Promise.resolve();
-      }
-
-      return new Promise((resolve) => {
-        image.addEventListener("load", resolve, { once: true });
-        image.addEventListener("error", resolve, { once: true });
-      }).then(() => (image.decode ? image.decode().catch(() => undefined) : undefined));
-    }));
-  };
-
-  const addSetClone = () => {
-    const clone = marqueeSourceSet.cloneNode(true);
-    clone.setAttribute("aria-hidden", "true");
-    clone.dataset.marqueeClone = "true";
-    marqueeTrack.append(clone);
-  };
-
-  const measureCycle = () => {
-    const firstSet = marqueeTrack.children[0];
-    const secondSet = marqueeTrack.children[1];
-
-    if (!firstSet || !secondSet) {
-      return 0;
-    }
-
-    return secondSet.getBoundingClientRect().left - firstSet.getBoundingClientRect().left;
-  };
-
-  const tick = (time) => {
-    if (!lastTime) {
-      lastTime = time;
-    }
-
-    const delta = Math.min((time - lastTime) / 1000, 0.064);
-    lastTime = time;
-    offset = (offset + delta * pixelsPerSecond) % cycleWidth;
-    marqueeTrack.style.transform = `translate3d(${-offset}px, 0, 0)`;
-    frameId = window.requestAnimationFrame(tick);
-  };
-
-  const build = () => {
-    window.cancelAnimationFrame(frameId);
-    marqueeTrack.style.transform = "translate3d(0, 0, 0)";
-    marqueeTrack.querySelectorAll("[data-marquee-clone]").forEach((clone) => clone.remove());
-
-    while (marqueeTrack.children.length < 2) {
-      addSetClone();
-    }
-
-    cycleWidth = measureCycle();
-
-    if (cycleWidth <= 0) {
-      return;
-    }
-
-    while (marqueeTrack.children.length < 3 || marqueeTrack.getBoundingClientRect().width < marquee.clientWidth + cycleWidth * 2) {
-      addSetClone();
-      cycleWidth = measureCycle();
-    }
-
-    offset = offset % cycleWidth;
-    lastTime = 0;
-    frameId = window.requestAnimationFrame(tick);
-  };
-
-  const scheduleBuild = () => {
-    window.clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(build, 150);
-  };
-
-  waitForMarqueeImages().then(build);
-  window.addEventListener("load", build, { once: true });
-  window.addEventListener("resize", scheduleBuild, { passive: true });
-  window.addEventListener("orientationchange", scheduleBuild, { passive: true });
-}
-
 drawerLinks.forEach((link, index) => link.style.setProperty("--drawer-i", index));
 
 ctaNodes.forEach((node) => {
@@ -260,7 +164,6 @@ if (newsletter) {
 }
 
 updateHeader();
-startMarquee();
 window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
 window.addEventListener("resize", requestHeaderUpdate, { passive: true });
 
