@@ -772,7 +772,7 @@ h1 {
 
 .marquee {
   --marquee-gap: 15px;
-  --marquee-duration: 86s;
+  --marquee-duration: 60s;
   display: flex;
   gap: var(--marquee-gap);
   margin: -14px -25px 0;
@@ -792,7 +792,7 @@ h1 {
 
 .marquee figure {
   aspect-ratio: 613 / 744;
-  flex: 0 0 clamp(340px, 36vw, 660px);
+  flex: 0 0 clamp(280px, 30vw, 560px);
   flex-shrink: 0;
   margin: 0;
   overflow: hidden;
@@ -2166,14 +2166,14 @@ figure:hover img,
 
   .marquee {
     --marquee-gap: 10px;
-    --marquee-duration: 64s;
+    --marquee-duration: 44s;
     margin-left: -16px;
     margin-right: -16px;
   }
 
   .marquee figure {
     aspect-ratio: 4 / 5;
-    flex-basis: min(90vw, 430px);
+    flex-basis: min(82vw, 390px);
   }
 
   .marquee img {
