@@ -782,7 +782,7 @@ h1 {
   display: inline-flex;
   gap: var(--marquee-gap);
   max-width: none;
-  min-width: max-content;
+  min-width: 0;
   transform: translate3d(0, 0, 0);
   width: auto;
   will-change: transform;

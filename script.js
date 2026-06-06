@@ -131,6 +131,7 @@ function startGsapMarquee() {
   let offset = 0;
   let lastTime = null;
   let ticker;
+  let resizeTimer;
 
   const getCycleWidth = () => {
     const firstSet = marqueeTrack.firstElementChild;
@@ -143,19 +144,10 @@ function startGsapMarquee() {
     return secondSet.getBoundingClientRect().left - firstSet.getBoundingClientRect().left;
   };
 
-  const recycleSets = () => {
-    let cycleWidth = getCycleWidth();
-
-    while (cycleWidth > 0 && offset >= cycleWidth) {
-      offset -= cycleWidth;
-      marqueeTrack.append(marqueeTrack.firstElementChild);
-      cycleWidth = getCycleWidth();
-    }
-  };
-
   const buildLoop = () => {
     if (ticker) {
       window.gsap.ticker.remove(ticker);
+      ticker = undefined;
     }
 
     offset = 0;
@@ -178,14 +170,15 @@ function startGsapMarquee() {
 
     addClone();
 
-    const cycleWidth = getCycleWidth();
+    let cycleWidth = getCycleWidth();
 
     if (cycleWidth <= 0) {
       return;
     }
 
-    while (marqueeTrack.getBoundingClientRect().width < marquee.clientWidth + sourceWidth * 2) {
+    while (marqueeTrack.children.length < 3 || marqueeTrack.getBoundingClientRect().width < marquee.clientWidth + cycleWidth * 2) {
       addClone();
+      cycleWidth = getCycleWidth();
     }
 
     ticker = (time) => {
@@ -196,16 +189,22 @@ function startGsapMarquee() {
       const delta = Math.min(time - lastTime, 0.064);
 
       lastTime = time;
-      offset += delta * pixelsPerSecond;
-      recycleSets();
+      offset = (offset + delta * pixelsPerSecond) % cycleWidth;
       window.gsap.set(marqueeTrack, { force3D: true, x: -Math.round(offset) });
     };
 
     window.gsap.ticker.add(ticker);
   };
 
+  const scheduleBuild = () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildLoop, 150);
+  };
+
   waitForImages([...marqueeSet.querySelectorAll("img")]).then(buildLoop);
-  window.addEventListener("resize", buildLoop, { passive: true });
+  document.fonts?.ready?.then(buildLoop).catch(() => undefined);
+  window.addEventListener("resize", scheduleBuild, { passive: true });
+  window.addEventListener("orientationchange", scheduleBuild, { passive: true });
   window.addEventListener("load", buildLoop, { once: true });
 }
 
