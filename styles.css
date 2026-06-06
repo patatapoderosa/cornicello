@@ -772,7 +772,7 @@ h1 {
 
 .marquee {
   --marquee-gap: 15px;
-  --marquee-duration: 60s;
+  --marquee-duration: 82s;
   display: flex;
   gap: var(--marquee-gap);
   margin: -14px -25px 0;
@@ -2166,7 +2166,7 @@ figure:hover img,
 
   .marquee {
     --marquee-gap: 10px;
-    --marquee-duration: 44s;
+    --marquee-duration: 60s;
     margin-left: -16px;
     margin-right: -16px;
   }
