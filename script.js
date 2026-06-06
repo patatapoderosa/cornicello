@@ -9,9 +9,6 @@ const drawerLinks = [...document.querySelectorAll(".drawer-links a")];
 const detailStage = document.querySelector("[data-detail-stage]");
 const detailPhotos = [...document.querySelectorAll(".details-photo")];
 const hoursGallery = document.querySelector("[data-hours-gallery]");
-const marquee = document.querySelector("[data-marquee]");
-const marqueeTrack = marquee?.querySelector("[data-marquee-track]");
-const marqueeSet = marquee?.querySelector("[data-marquee-set]");
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
@@ -107,107 +104,6 @@ function updateHeader() {
 
 }
 
-function waitForImages(images) {
-  const imagePromises = images.map((image) => {
-    if (image.complete && image.naturalWidth > 0) {
-      return image.decode ? image.decode().catch(() => undefined) : Promise.resolve();
-    }
-
-    return new Promise((resolve) => {
-      image.addEventListener("load", resolve, { once: true });
-      image.addEventListener("error", resolve, { once: true });
-    }).then(() => (image.decode ? image.decode().catch(() => undefined) : undefined));
-  });
-
-  return Promise.allSettled(imagePromises);
-}
-
-function startGsapMarquee() {
-  if (!marquee || !marqueeTrack || !marqueeSet || !window.gsap || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    return;
-  }
-
-  const pixelsPerSecond = 45;
-  let offset = 0;
-  let lastTime = null;
-  let ticker;
-  let resizeTimer;
-
-  const getCycleWidth = () => {
-    const firstSet = marqueeTrack.firstElementChild;
-    const secondSet = firstSet?.nextElementSibling;
-
-    if (!firstSet || !secondSet) {
-      return 0;
-    }
-
-    return secondSet.getBoundingClientRect().left - firstSet.getBoundingClientRect().left;
-  };
-
-  const buildLoop = () => {
-    if (ticker) {
-      window.gsap.ticker.remove(ticker);
-      ticker = undefined;
-    }
-
-    offset = 0;
-    lastTime = null;
-    window.gsap.set(marqueeTrack, { force3D: true, x: 0 });
-    marqueeTrack.querySelectorAll("[data-marquee-clone]").forEach((clone) => clone.remove());
-
-    const sourceWidth = marqueeSet.getBoundingClientRect().width;
-
-    if (sourceWidth <= 0) {
-      return;
-    }
-
-    const addClone = () => {
-      const clone = marqueeSet.cloneNode(true);
-      clone.setAttribute("data-marquee-clone", "true");
-      clone.setAttribute("aria-hidden", "true");
-      marqueeTrack.append(clone);
-    };
-
-    addClone();
-
-    let cycleWidth = getCycleWidth();
-
-    if (cycleWidth <= 0) {
-      return;
-    }
-
-    while (marqueeTrack.children.length < 3 || marqueeTrack.getBoundingClientRect().width < marquee.clientWidth + cycleWidth * 2) {
-      addClone();
-      cycleWidth = getCycleWidth();
-    }
-
-    ticker = (time) => {
-      if (lastTime === null) {
-        lastTime = time;
-      }
-
-      const delta = Math.min(time - lastTime, 0.064);
-
-      lastTime = time;
-      offset = (offset + delta * pixelsPerSecond) % cycleWidth;
-      window.gsap.set(marqueeTrack, { force3D: true, x: -Math.round(offset) });
-    };
-
-    window.gsap.ticker.add(ticker);
-  };
-
-  const scheduleBuild = () => {
-    window.clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(buildLoop, 150);
-  };
-
-  waitForImages([...marqueeSet.querySelectorAll("img")]).then(buildLoop);
-  document.fonts?.ready?.then(buildLoop).catch(() => undefined);
-  window.addEventListener("resize", scheduleBuild, { passive: true });
-  window.addEventListener("orientationchange", scheduleBuild, { passive: true });
-  window.addEventListener("load", buildLoop, { once: true });
-}
-
 drawerLinks.forEach((link, index) => link.style.setProperty("--drawer-i", index));
 
 ctaNodes.forEach((node) => {
@@ -268,7 +164,6 @@ if (newsletter) {
 }
 
 updateHeader();
-startGsapMarquee();
 window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
 window.addEventListener("resize", requestHeaderUpdate, { passive: true });
 
