@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet" />
     <link href="https://api.fontshare.com/v2/css?f[]=author@400&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=69" />
+    <link rel="stylesheet" href="styles.css?v=70" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -82,7 +82,18 @@
           <p data-reveal>Impasti curati, ingredienti freschi e tante proposte da gustare in pizzeria o da asporto.</p>
           <a class="text-link" href="assets/menu.pdf">Scopri il menù</a>
         </div>
-        <div id="marquee-root"></div>
+        <div class="marquee" aria-hidden="true" data-marquee>
+          <div class="marquee-track" data-marquee-track>
+            <div class="marquee-set" data-marquee-set>
+              <figure><img src="assets/gallery-pizzaiolo-pizza.jpeg" alt="" loading="eager" decoding="async" /></figure>
+              <figure><img src="assets/gallery-forno-pizza.jpeg" alt="" loading="eager" decoding="async" /></figure>
+              <figure><img src="assets/gallery-crostini.jpeg" alt="" loading="eager" decoding="async" /></figure>
+              <figure><img src="assets/gallery-fritti-birra.jpeg" alt="" loading="eager" decoding="async" /></figure>
+              <figure><img src="assets/slideshow-baba.jpeg" alt="" loading="eager" decoding="async" /></figure>
+              <figure><img src="assets/gallery-pizza-gialla.jpeg" alt="" loading="eager" decoding="async" /></figure>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="story-panel" id="story">
@@ -168,9 +179,6 @@
       </div>
     </footer>
 
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="marquee-react.js?v=69"></script>
-    <script src="script.js?v=69"></script>
+    <script src="script.js?v=70"></script>
   </body>
 </html>
