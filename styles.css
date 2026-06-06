@@ -2166,7 +2166,7 @@ figure:hover img,
 
   .marquee {
     --marquee-gap: 10px;
-    --marquee-duration: 60s;
+    --marquee-duration: 86s;
     margin-left: -16px;
     margin-right: -16px;
   }
