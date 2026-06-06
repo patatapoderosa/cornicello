@@ -773,17 +773,11 @@ h1 {
 .marquee {
   --marquee-gap: 15px;
   --marquee-duration: 60s;
+  display: flex;
+  gap: var(--marquee-gap);
   margin: -14px -25px 0;
   overflow: hidden;
   padding: 0;
-  width: auto;
-}
-
-.marquee-track {
-  display: flex;
-  gap: var(--marquee-gap);
-  max-width: none;
-  min-width: 0;
   width: auto;
 }
 
