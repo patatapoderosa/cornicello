@@ -170,6 +170,7 @@ function setupMarqueeCarousel() {
   let lastScrollY = window.scrollY;
   let gap = 0;
   let isMobileScrolling = false;
+  let isRunning = false;
 
   const measureGap = () => {
     const trackStyle = window.getComputedStyle(track);
@@ -198,6 +199,10 @@ function setupMarqueeCarousel() {
   };
 
   const tick = (time) => {
+    if (!isRunning) {
+      return;
+    }
+
     if (!lastTime) {
       lastTime = time;
     }
@@ -223,27 +228,47 @@ function setupMarqueeCarousel() {
     marqueeFrame = window.requestAnimationFrame(tick);
   };
 
-  const handleMobileScroll = () => {
+  const start = () => {
+    if (isRunning) {
+      return;
+    }
+
+    isRunning = true;
+    lastTime = 0;
+    marqueeFrame = window.requestAnimationFrame(tick);
+  };
+
+  const stop = () => {
+    if (!isRunning) {
+      return;
+    }
+
+    isRunning = false;
+    window.cancelAnimationFrame(marqueeFrame);
+  };
+
+  const pauseForMobileScroll = () => {
     if (!isTouchDevice.matches) {
       return;
     }
 
     lastScrollY = window.scrollY;
     isMobileScrolling = true;
+    stop();
     window.clearTimeout(mobileScrollTimer);
     mobileScrollTimer = window.setTimeout(() => {
       isMobileScrolling = false;
-      lastTime = 0;
+      start();
     }, 180);
   };
 
   const restart = () => {
-    window.cancelAnimationFrame(marqueeFrame);
+    stop();
     measureGap();
     offset = 0;
     lastTime = 0;
     render();
-    marqueeFrame = window.requestAnimationFrame(tick);
+    start();
   };
 
   const images = [...track.querySelectorAll("img")];
@@ -255,8 +280,10 @@ function setupMarqueeCarousel() {
 
   restart();
   window.addEventListener("resize", restart, { passive: true });
-  window.addEventListener("scroll", handleMobileScroll, { passive: true });
-  window.addEventListener("touchmove", handleMobileScroll, { passive: true });
+  window.addEventListener("scroll", pauseForMobileScroll, { passive: true });
+  window.addEventListener("touchstart", pauseForMobileScroll, { passive: true });
+  window.addEventListener("touchmove", pauseForMobileScroll, { passive: true });
+  window.addEventListener("touchend", pauseForMobileScroll, { passive: true });
 }
 
 toggle.addEventListener("click", () => {
