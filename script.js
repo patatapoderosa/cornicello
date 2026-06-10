@@ -20,7 +20,6 @@ const fastRevealStagger = 24;
 const defaultRevealDuration = 650;
 const fastRevealDuration = 430;
 let headerUpdateQueued = false;
-let drawerCollapseTimer;
 let drawerCloseTimer;
 
 function requestHeaderUpdate() {
@@ -60,7 +59,6 @@ function setCtaText(node, text) {
 }
 
 function openDrawer() {
-  window.clearTimeout(drawerCollapseTimer);
   window.clearTimeout(drawerCloseTimer);
   document.body.classList.remove("menu-closing", "menu-instant-close");
   document.body.classList.add("menu-open");
@@ -71,7 +69,6 @@ function openDrawer() {
 }
 
 function closeDrawer({ instant = false } = {}) {
-  window.clearTimeout(drawerCollapseTimer);
   window.clearTimeout(drawerCloseTimer);
 
   if (instant) {
@@ -94,14 +91,11 @@ function closeDrawer({ instant = false } = {}) {
   updateToggleLabel();
   document.body.classList.add("menu-closing");
   header.classList.remove("is-open");
-
-  drawerCollapseTimer = window.setTimeout(() => {
-    document.body.classList.remove("menu-open");
-  }, 150);
+  document.body.classList.remove("menu-open");
 
   drawerCloseTimer = window.setTimeout(() => {
     document.body.classList.remove("menu-closing");
-  }, 760);
+  }, 720);
 }
 
 function updateHeader() {
