@@ -13,7 +13,6 @@ const marquee = document.querySelector("[data-marquee]");
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)");
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
 const scheduleAnimationFrame = window.requestAnimationFrame
   ? (callback) => window.requestAnimationFrame(callback)
@@ -23,8 +22,6 @@ const fastRevealStagger = 24;
 const defaultRevealDuration = 650;
 const fastRevealDuration = 430;
 let headerUpdateQueued = false;
-let marqueeFrame;
-let mobileScrollTimer;
 let drawerCloseTimer;
 
 function requestHeaderUpdate() {
@@ -165,125 +162,25 @@ function setupMarqueeCarousel() {
     return;
   }
 
-  let offset = 0;
-  let lastTime = 0;
-  let lastScrollY = window.scrollY;
-  let gap = 0;
-  let isMobileScrolling = false;
-  let isRunning = false;
-
-  const measureGap = () => {
+  const setLoopDistance = () => {
+    const figures = [...track.querySelectorAll("figure")];
+    const loopItems = figures.slice(0, Math.max(figures.length / 2, 1));
     const trackStyle = window.getComputedStyle(track);
-    gap = Number.parseFloat(trackStyle.columnGap || trackStyle.gap || "0") || 0;
-  };
+    const gap = Number.parseFloat(trackStyle.columnGap || trackStyle.gap || "0") || 0;
+    const distance = loopItems.reduce((total, item) => total + item.getBoundingClientRect().width + gap, 0);
 
-  const recycleItems = () => {
-    let firstItem = track.querySelector("figure");
-
-    while (firstItem) {
-      const itemWidth = firstItem.getBoundingClientRect().width + gap;
-
-      if (itemWidth <= 0 || offset < itemWidth) {
-        break;
-      }
-
-      offset -= itemWidth;
-      track.append(firstItem);
-      firstItem = track.querySelector("figure");
-    }
-  };
-
-  const render = () => {
-    recycleItems();
-    track.style.transform = `translate3d(${-offset}px, 0, 0)`;
-  };
-
-  const tick = (time) => {
-    if (!isRunning) {
-      return;
-    }
-
-    if (!lastTime) {
-      lastTime = time;
-    }
-
-    const delta = Math.min(time - lastTime, 64);
-    lastTime = time;
-
-    if (isTouchDevice.matches && window.scrollY !== lastScrollY) {
-      isMobileScrolling = true;
-      lastScrollY = window.scrollY;
-      window.clearTimeout(mobileScrollTimer);
-      mobileScrollTimer = window.setTimeout(() => {
-        isMobileScrolling = false;
-        lastTime = 0;
-      }, 180);
-    }
-
-    if (!isMobileScrolling) {
-      offset += delta * 0.035;
-      render();
-    }
-
-    marqueeFrame = window.requestAnimationFrame(tick);
-  };
-
-  const start = () => {
-    if (isRunning) {
-      return;
-    }
-
-    isRunning = true;
-    lastTime = 0;
-    marqueeFrame = window.requestAnimationFrame(tick);
-  };
-
-  const stop = () => {
-    if (!isRunning) {
-      return;
-    }
-
-    isRunning = false;
-    window.cancelAnimationFrame(marqueeFrame);
-  };
-
-  const pauseForMobileScroll = () => {
-    if (!isTouchDevice.matches) {
-      return;
-    }
-
-    lastScrollY = window.scrollY;
-    isMobileScrolling = true;
-    stop();
-    window.clearTimeout(mobileScrollTimer);
-    mobileScrollTimer = window.setTimeout(() => {
-      isMobileScrolling = false;
-      start();
-    }, 180);
-  };
-
-  const restart = () => {
-    stop();
-    measureGap();
-    offset = 0;
-    lastTime = 0;
-    render();
-    start();
+    track.style.setProperty("--marquee-distance", `${distance}px`);
   };
 
   const images = [...track.querySelectorAll("img")];
   images.forEach((image) => {
     if (!image.complete) {
-      image.addEventListener("load", measureGap, { once: true });
+      image.addEventListener("load", setLoopDistance, { once: true });
     }
   });
 
-  restart();
-  window.addEventListener("resize", restart, { passive: true });
-  window.addEventListener("scroll", pauseForMobileScroll, { passive: true });
-  window.addEventListener("touchstart", pauseForMobileScroll, { passive: true });
-  window.addEventListener("touchmove", pauseForMobileScroll, { passive: true });
-  window.addEventListener("touchend", pauseForMobileScroll, { passive: true });
+  setLoopDistance();
+  window.addEventListener("resize", setLoopDistance, { passive: true });
 }
 
 toggle.addEventListener("click", () => {

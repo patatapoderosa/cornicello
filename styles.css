@@ -883,6 +883,7 @@ h1 {
 }
 
 .marquee {
+  --marquee-duration: 72s;
   --marquee-gap: 15px;
   margin: -14px -25px 0;
   overflow: hidden;
@@ -892,6 +893,7 @@ h1 {
 }
 
 .marquee-track {
+  animation: marquee-loop var(--marquee-duration) linear infinite;
   display: flex;
   gap: var(--marquee-gap);
   transform: translate3d(0, 0, 0);
@@ -923,7 +925,18 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track {
+    animation: none;
     transform: translate3d(0, 0, 0) !important;
+  }
+}
+
+@keyframes marquee-loop {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(var(--marquee-distance, 0px) * -1), 0, 0);
   }
 }
 
