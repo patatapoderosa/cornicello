@@ -773,25 +773,24 @@ h1 {
 .marquee {
   --marquee-gap: 15px;
   --marquee-duration: 82s;
-  display: flex;
-  gap: var(--marquee-gap);
   margin: -14px -25px 0;
   overflow: hidden;
   padding: 0;
   width: auto;
 }
 
-.marquee-set {
+.marquee-track {
   animation: marquee-left var(--marquee-duration) linear infinite;
   display: flex;
-  flex: 0 0 auto;
-  flex-shrink: 0;
   gap: var(--marquee-gap);
+  width: max-content;
   will-change: transform;
 }
 
 .marquee figure {
   aspect-ratio: 613 / 744;
+  border-radius: 0;
+  box-shadow: none;
   flex: 0 0 clamp(280px, 30vw, 560px);
   flex-shrink: 0;
   margin: 0;
@@ -811,7 +810,7 @@ h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marquee-set {
+  .marquee-track {
     animation: none;
     transform: translate3d(0, 0, 0) !important;
   }
@@ -823,7 +822,7 @@ h1 {
   }
 
   to {
-    transform: translate3d(calc(-100% - var(--marquee-gap)), 0, 0);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
