@@ -22,7 +22,7 @@ const fastRevealStagger = 24;
 const defaultRevealDuration = 650;
 const fastRevealDuration = 430;
 let headerUpdateQueued = false;
-let marqueeTimer;
+let marqueeFrame;
 let drawerCloseTimer;
 
 function requestHeaderUpdate() {
@@ -163,55 +163,61 @@ function setupMarqueeCarousel() {
     return;
   }
 
-  const updateStep = () => {
-    const firstItem = track.querySelector("figure");
+  let offset = 0;
+  let lastTime = 0;
+  let gap = 0;
 
-    if (!firstItem) {
-      return;
-    }
-
+  const measureGap = () => {
     const trackStyle = window.getComputedStyle(track);
-    const gap = Number.parseFloat(trackStyle.columnGap || trackStyle.gap || "0") || 0;
-    const step = firstItem.getBoundingClientRect().width + gap;
-    track.style.setProperty("--marquee-step", `${step}px`);
+    gap = Number.parseFloat(trackStyle.columnGap || trackStyle.gap || "0") || 0;
   };
 
-  const advance = () => {
-    if (track.classList.contains("is-shifting")) {
-      return;
-    }
+  const recycleItems = () => {
+    let firstItem = track.querySelector("figure");
 
-    updateStep();
-    track.classList.add("is-shifting");
-  };
+    while (firstItem) {
+      const itemWidth = firstItem.getBoundingClientRect().width + gap;
 
-  track.addEventListener("transitionend", (event) => {
-    if (event.propertyName !== "transform" || !track.classList.contains("is-shifting")) {
-      return;
-    }
+      if (itemWidth <= 0 || offset < itemWidth) {
+        break;
+      }
 
-    const firstItem = track.querySelector("figure");
-
-    if (firstItem) {
+      offset -= itemWidth;
       track.append(firstItem);
+      firstItem = track.querySelector("figure");
+    }
+  };
+
+  const render = () => {
+    recycleItems();
+    track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+  };
+
+  const tick = (time) => {
+    if (!lastTime) {
+      lastTime = time;
     }
 
-    track.classList.add("is-resetting");
-    track.classList.remove("is-shifting");
-    track.offsetHeight;
-    track.classList.remove("is-resetting");
-  });
+    const delta = Math.min(time - lastTime, 64);
+    lastTime = time;
+    offset += delta * 0.035;
+    render();
+    marqueeFrame = window.requestAnimationFrame(tick);
+  };
 
   const restart = () => {
-    window.clearInterval(marqueeTimer);
-    updateStep();
-    marqueeTimer = window.setInterval(advance, 1600);
+    window.cancelAnimationFrame(marqueeFrame);
+    measureGap();
+    offset = 0;
+    lastTime = 0;
+    render();
+    marqueeFrame = window.requestAnimationFrame(tick);
   };
 
   const images = [...track.querySelectorAll("img")];
   images.forEach((image) => {
     if (!image.complete) {
-      image.addEventListener("load", updateStep, { once: true });
+      image.addEventListener("load", measureGap, { once: true });
     }
   });
 
