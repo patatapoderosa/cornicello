@@ -897,8 +897,8 @@ figure:hover img,
   }
 
   .story-panel > img {
-    object-fit: contain;
-    object-position: right center;
+    object-fit: cover;
+    object-position: center bottom;
   }
 }
 
