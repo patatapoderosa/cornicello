@@ -20,6 +20,8 @@ const fastRevealStagger = 24;
 const defaultRevealDuration = 650;
 const fastRevealDuration = 430;
 let headerUpdateQueued = false;
+let drawerCollapseTimer;
+let drawerCloseTimer;
 
 function requestHeaderUpdate() {
   if (headerUpdateQueued) {
@@ -58,6 +60,9 @@ function setCtaText(node, text) {
 }
 
 function openDrawer() {
+  window.clearTimeout(drawerCollapseTimer);
+  window.clearTimeout(drawerCloseTimer);
+  document.body.classList.remove("menu-closing", "menu-instant-close");
   document.body.classList.add("menu-open");
   header.classList.add("is-open");
   drawer.setAttribute("aria-hidden", "false");
@@ -65,12 +70,38 @@ function openDrawer() {
   updateToggleLabel();
 }
 
-function closeDrawer() {
-  header.classList.remove("is-open");
-  document.body.classList.remove("menu-open");
+function closeDrawer({ instant = false } = {}) {
+  window.clearTimeout(drawerCollapseTimer);
+  window.clearTimeout(drawerCloseTimer);
+
+  if (instant) {
+    document.body.classList.add("menu-instant-close");
+    document.body.classList.remove("menu-open", "menu-closing");
+    header.classList.remove("is-open");
+    drawer.setAttribute("aria-hidden", "true");
+    toggle.setAttribute("aria-expanded", "false");
+    updateToggleLabel();
+    scheduleAnimationFrame(() => document.body.classList.remove("menu-instant-close"));
+    return;
+  }
+
+  if (!document.body.classList.contains("menu-open")) {
+    return;
+  }
+
   drawer.setAttribute("aria-hidden", "true");
   toggle.setAttribute("aria-expanded", "false");
   updateToggleLabel();
+  document.body.classList.add("menu-closing");
+  header.classList.remove("is-open");
+
+  drawerCollapseTimer = window.setTimeout(() => {
+    document.body.classList.remove("menu-open");
+  }, 150);
+
+  drawerCloseTimer = window.setTimeout(() => {
+    document.body.classList.remove("menu-closing");
+  }, 760);
 }
 
 function updateHeader() {
@@ -145,13 +176,14 @@ drawerLinks.forEach((link) => {
 
     event.preventDefault();
     event.stopPropagation();
+    closeDrawer({ instant: true });
     window.location.href = link.href;
   });
 });
 
 document.addEventListener("click", (event) => {
   if (event.target.closest("a") && !event.target.closest(".drawer-links a")) {
-    closeDrawer();
+    closeDrawer({ instant: true });
   }
 });
 

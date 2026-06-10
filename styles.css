@@ -229,9 +229,13 @@ body.menu-open .menu-toggle span:last-child {
   top: calc(14px + var(--nav-height));
   transform: none;
   transform-origin: top right;
-  transition: height 980ms cubic-bezier(0.19, 1, 0.22, 1);
+  transition: height 620ms cubic-bezier(0.22, 1, 0.36, 1);
   width: var(--nav-width);
   z-index: 9;
+}
+
+body.menu-instant-close .menu-drawer {
+  transition: none;
 }
 
 body.menu-open .menu-drawer {
@@ -246,29 +250,49 @@ body.menu-open .menu-drawer {
   grid-template-rows: auto auto auto auto;
   inset: 0;
   min-height: 100%;
-  opacity: 1;
+  opacity: 0;
   overflow: hidden;
   position: absolute;
-  transition: opacity 460ms ease, filter 520ms ease, transform 520ms cubic-bezier(0.19, 1, 0.22, 1);
+  filter: blur(10px);
+  transform: translateY(-4px);
+  transition: filter 360ms ease, opacity 220ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .drawer-view-menu {
   pointer-events: auto;
 }
 
+body.menu-open .drawer-view {
+  filter: blur(0);
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 120ms;
+}
+
+body.menu-closing .drawer-view,
+body.menu-instant-close .drawer-view {
+  filter: blur(12px);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0);
+  transition: filter 150ms ease, opacity 150ms ease, transform 150ms ease;
+}
+
 .drawer-logo {
+  opacity: 0;
   height: 50px;
   justify-self: start;
   margin: 20px 22px 0;
   object-fit: contain;
   transform: translateY(10px);
-  transition: filter 500ms ease 110ms, transform 500ms ease 110ms;
+  transition: filter 420ms ease 130ms, opacity 260ms ease 130ms, transform 420ms ease 130ms;
   width: 23px;
   filter: blur(8px);
 }
 
 body.menu-open .drawer-logo {
   filter: blur(0);
+  opacity: 1;
   transform: translateY(0);
 }
 
@@ -284,19 +308,39 @@ body.menu-open .drawer-logo {
   font-family: var(--gilda);
   font-size: clamp(31px, 3vw, 39px);
   filter: blur(12px);
+  opacity: 0;
   line-height: 1;
   transform: translateY(16px);
   position: relative;
-  transition: color 220ms ease, filter 180ms ease, transform 180ms ease;
+  transition: color 220ms ease, filter 160ms ease, opacity 120ms ease, transform 160ms ease;
 }
 
 body.menu-open .drawer-links a {
   filter: blur(0);
+  opacity: 1;
   transform: translateY(0);
   transition:
     color 220ms ease,
-    filter 520ms ease calc(var(--drawer-i, 0) * 70ms + 150ms),
-    transform 520ms ease calc(var(--drawer-i, 0) * 70ms + 150ms);
+    filter 460ms ease calc(var(--drawer-i, 0) * 58ms + 120ms),
+    opacity 300ms ease calc(var(--drawer-i, 0) * 58ms + 120ms),
+    transform 460ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--drawer-i, 0) * 58ms + 120ms);
+}
+
+body.menu-closing .drawer-logo,
+body.menu-closing .drawer-links a,
+body.menu-closing .drawer-contact,
+body.menu-closing .drawer-socials,
+body.menu-closing .drawer-view-menu > p,
+body.menu-instant-close .drawer-logo,
+body.menu-instant-close .drawer-links a,
+body.menu-instant-close .drawer-contact,
+body.menu-instant-close .drawer-socials,
+body.menu-instant-close .drawer-view-menu > p {
+  filter: blur(16px);
+  opacity: 0;
+  transform: translateY(0);
+  transition: filter 120ms ease, opacity 120ms ease, transform 120ms ease;
+  transition-delay: 0ms;
 }
 
 .drawer-links a:hover {
@@ -328,14 +372,16 @@ body.menu-open .drawer-links a {
   border-top: 1px solid rgba(255, 255, 255, 0.54);
   display: flex;
   gap: 14px;
+  opacity: 0;
   padding: 10px 22px;
   transform: translateY(12px);
-  transition: transform 520ms ease 360ms;
+  transition: opacity 260ms ease 280ms, transform 460ms cubic-bezier(0.22, 1, 0.36, 1) 280ms;
 }
 
 body.menu-open .drawer-contact,
 body.menu-open .drawer-socials,
 body.menu-open .drawer-view-menu > p {
+  opacity: 1;
   transform: translateY(0);
 }
 
