@@ -15,6 +15,7 @@
   --nav-height: 38px;
   --menu-duration: 680ms;
   --menu-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --menu-blur: 22px;
 }
 
 * {
@@ -256,10 +257,10 @@ body.menu-open .menu-drawer {
   grid-template-rows: auto auto auto auto;
   inset: 0;
   min-height: 100%;
-  opacity: 0;
+  opacity: 0.58;
   overflow: hidden;
   position: absolute;
-  filter: blur(10px);
+  filter: blur(var(--menu-blur));
   transform: translateY(-4px);
   transition: filter var(--menu-duration) var(--menu-ease), opacity var(--menu-duration) ease, transform var(--menu-duration) var(--menu-ease);
 }
@@ -277,15 +278,15 @@ body.menu-open .drawer-view {
 
 body.menu-closing .drawer-view,
 body.menu-instant-close .drawer-view {
-  filter: blur(12px);
-  opacity: 0;
+  filter: blur(var(--menu-blur));
+  opacity: 0.24;
   pointer-events: none;
   transform: translateY(0);
   transition: filter var(--menu-duration) var(--menu-ease), opacity var(--menu-duration) ease, transform var(--menu-duration) var(--menu-ease);
 }
 
 .drawer-logo {
-  opacity: 0;
+  opacity: 0.55;
   height: 50px;
   justify-self: start;
   margin: 20px 22px 0;
@@ -293,7 +294,7 @@ body.menu-instant-close .drawer-view {
   transform: translateY(10px);
   transition: filter var(--menu-duration) var(--menu-ease), opacity var(--menu-duration) ease, transform var(--menu-duration) var(--menu-ease);
   width: 23px;
-  filter: blur(8px);
+  filter: blur(18px);
 }
 
 body.menu-open .drawer-logo {
@@ -313,8 +314,8 @@ body.menu-open .drawer-logo {
   display: block;
   font-family: var(--gilda);
   font-size: clamp(31px, 3vw, 39px);
-  filter: blur(12px);
-  opacity: 0;
+  filter: blur(var(--menu-blur));
+  opacity: 0.58;
   line-height: 1;
   transform: translateY(16px);
   position: relative;
@@ -343,7 +344,7 @@ body.menu-instant-close .drawer-contact,
 body.menu-instant-close .drawer-socials,
 body.menu-instant-close .drawer-view-menu > p {
   filter: blur(16px);
-  opacity: 0;
+  opacity: 0.18;
   transform: translateY(0);
   transition: filter var(--menu-duration) var(--menu-ease), opacity var(--menu-duration) ease, transform var(--menu-duration) var(--menu-ease);
   transition-delay: 0ms;
@@ -387,7 +388,8 @@ body.menu-instant-close .drawer-view-menu > p {
   border-top: 1px solid rgba(255, 255, 255, 0.54);
   display: flex;
   gap: 14px;
-  opacity: 0;
+  filter: blur(16px);
+  opacity: 0.55;
   padding: 10px 22px;
   transform: translateY(12px);
   transition: opacity var(--menu-duration) ease, transform var(--menu-duration) var(--menu-ease), filter var(--menu-duration) var(--menu-ease);
@@ -396,6 +398,7 @@ body.menu-instant-close .drawer-view-menu > p {
 body.menu-open .drawer-contact,
 body.menu-open .drawer-socials,
 body.menu-open .drawer-view-menu > p {
+  filter: blur(0);
   opacity: 1;
   transform: translateY(0);
 }
