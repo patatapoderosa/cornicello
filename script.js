@@ -24,6 +24,7 @@ const defaultRevealDuration = 650;
 const fastRevealDuration = 430;
 let headerUpdateQueued = false;
 let marqueeFrame;
+let mobileScrollTimer;
 let drawerCloseTimer;
 
 function requestHeaderUpdate() {
@@ -166,7 +167,9 @@ function setupMarqueeCarousel() {
 
   let offset = 0;
   let lastTime = 0;
+  let lastScrollY = window.scrollY;
   let gap = 0;
+  let isMobileScrolling = false;
 
   const measureGap = () => {
     const trackStyle = window.getComputedStyle(track);
@@ -201,9 +204,37 @@ function setupMarqueeCarousel() {
 
     const delta = Math.min(time - lastTime, 64);
     lastTime = time;
-    offset += delta * 0.035;
-    render();
+
+    if (isTouchDevice.matches && window.scrollY !== lastScrollY) {
+      isMobileScrolling = true;
+      lastScrollY = window.scrollY;
+      window.clearTimeout(mobileScrollTimer);
+      mobileScrollTimer = window.setTimeout(() => {
+        isMobileScrolling = false;
+        lastTime = 0;
+      }, 180);
+    }
+
+    if (!isMobileScrolling) {
+      offset += delta * 0.035;
+      render();
+    }
+
     marqueeFrame = window.requestAnimationFrame(tick);
+  };
+
+  const handleMobileScroll = () => {
+    if (!isTouchDevice.matches) {
+      return;
+    }
+
+    lastScrollY = window.scrollY;
+    isMobileScrolling = true;
+    window.clearTimeout(mobileScrollTimer);
+    mobileScrollTimer = window.setTimeout(() => {
+      isMobileScrolling = false;
+      lastTime = 0;
+    }, 180);
   };
 
   const restart = () => {
@@ -224,6 +255,8 @@ function setupMarqueeCarousel() {
 
   restart();
   window.addEventListener("resize", restart, { passive: true });
+  window.addEventListener("scroll", handleMobileScroll, { passive: true });
+  window.addEventListener("touchmove", handleMobileScroll, { passive: true });
 }
 
 toggle.addEventListener("click", () => {
