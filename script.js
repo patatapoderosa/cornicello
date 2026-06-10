@@ -160,7 +160,7 @@ ctaNodes.forEach((node) => {
 function setupMarqueeCarousel() {
   const track = marquee?.querySelector(".marquee-track");
 
-  if (!track || prefersReducedMotion.matches || isTouchDevice.matches) {
+  if (!track || prefersReducedMotion.matches) {
     return;
   }
 
