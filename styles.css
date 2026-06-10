@@ -875,6 +875,11 @@ h1 {
     filter: none;
     opacity: 1;
   }
+
+  .marquee,
+  .marquee * {
+    pointer-events: none;
+  }
 }
 
 .marquee {

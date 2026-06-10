@@ -13,6 +13,7 @@ const marquee = document.querySelector("[data-marquee]");
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)");
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
 const scheduleAnimationFrame = window.requestAnimationFrame
   ? (callback) => window.requestAnimationFrame(callback)
@@ -159,7 +160,7 @@ ctaNodes.forEach((node) => {
 function setupMarqueeCarousel() {
   const track = marquee?.querySelector(".marquee-track");
 
-  if (!track || prefersReducedMotion.matches) {
+  if (!track || prefersReducedMotion.matches || isTouchDevice.matches) {
     return;
   }
 
