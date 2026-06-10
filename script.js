@@ -95,7 +95,7 @@ function closeDrawer({ instant = false } = {}) {
 
   drawerCloseTimer = window.setTimeout(() => {
     document.body.classList.remove("menu-closing");
-  }, 720);
+  }, 680);
 }
 
 function updateHeader() {
