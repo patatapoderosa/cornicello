@@ -832,6 +832,49 @@ h1 {
     background: var(--red);
     color: var(--white);
   }
+
+  .drawer-links a:hover,
+  .drawer-contact a:hover,
+  .footer-phone:hover,
+  .footer-navs a:hover,
+  .footer-bottom a:hover {
+    color: inherit;
+    transform: none;
+  }
+
+  .drawer-links a:hover::after,
+  .drawer-contact a:hover::after,
+  .footer-phone:hover .footer-phone-text::after {
+    transform: scaleX(0);
+  }
+
+  .drawer-socials a:hover,
+  .footer-socials a:hover {
+    background: transparent;
+    color: inherit;
+    transform: none;
+  }
+
+  .footer-socials a:hover {
+    border-color: rgba(74, 7, 8, 0.28);
+  }
+
+  .footer-cta:hover {
+    background: #4a0708;
+    color: var(--cream);
+    transform: none;
+  }
+
+  figure:hover img,
+  .news-grid article:hover img {
+    filter: none;
+    transform: none;
+  }
+
+  .details-stage:hover .details-photo {
+    filter: none;
+    opacity: 1;
+  }
 }
 
 .marquee {
@@ -839,6 +882,7 @@ h1 {
   margin: -14px -25px 0;
   overflow: hidden;
   padding: 0;
+  touch-action: pan-y;
   width: auto;
 }
 
