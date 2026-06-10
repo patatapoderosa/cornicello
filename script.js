@@ -9,8 +9,10 @@ const drawerLinks = [...document.querySelectorAll(".drawer-links a")];
 const detailStage = document.querySelector("[data-detail-stage]");
 const detailPhotos = [...document.querySelectorAll(".details-photo")];
 const hoursGallery = document.querySelector("[data-hours-gallery]");
+const marquee = document.querySelector("[data-marquee]");
 const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
 const scheduleAnimationFrame = window.requestAnimationFrame
   ? (callback) => window.requestAnimationFrame(callback)
@@ -20,6 +22,7 @@ const fastRevealStagger = 24;
 const defaultRevealDuration = 650;
 const fastRevealDuration = 430;
 let headerUpdateQueued = false;
+let marqueeTimer;
 let drawerCloseTimer;
 
 function requestHeaderUpdate() {
@@ -153,6 +156,69 @@ ctaNodes.forEach((node) => {
   node.append(label, icon);
 });
 
+function setupMarqueeCarousel() {
+  const track = marquee?.querySelector(".marquee-track");
+
+  if (!track || prefersReducedMotion.matches) {
+    return;
+  }
+
+  const updateStep = () => {
+    const firstItem = track.querySelector("figure");
+
+    if (!firstItem) {
+      return;
+    }
+
+    const trackStyle = window.getComputedStyle(track);
+    const gap = Number.parseFloat(trackStyle.columnGap || trackStyle.gap || "0") || 0;
+    const step = firstItem.getBoundingClientRect().width + gap;
+    track.style.setProperty("--marquee-step", `${step}px`);
+  };
+
+  const advance = () => {
+    if (track.classList.contains("is-shifting")) {
+      return;
+    }
+
+    updateStep();
+    track.classList.add("is-shifting");
+  };
+
+  track.addEventListener("transitionend", (event) => {
+    if (event.propertyName !== "transform" || !track.classList.contains("is-shifting")) {
+      return;
+    }
+
+    const firstItem = track.querySelector("figure");
+
+    if (firstItem) {
+      track.append(firstItem);
+    }
+
+    track.classList.add("is-resetting");
+    track.classList.remove("is-shifting");
+    track.offsetHeight;
+    track.classList.remove("is-resetting");
+  });
+
+  const restart = () => {
+    window.clearInterval(marqueeTimer);
+    updateStep();
+    marqueeTimer = window.setInterval(advance, 1600);
+  };
+
+  const images = [...track.querySelectorAll("img")];
+  images.forEach((image) => {
+    if (!image.complete) {
+      image.addEventListener("load", updateStep, { once: true });
+    }
+  });
+
+  restart();
+  window.addEventListener("resize", restart, { passive: true });
+}
+
 toggle.addEventListener("click", () => {
   if (document.body.classList.contains("menu-open")) {
     closeDrawer();
@@ -190,6 +256,7 @@ if (newsletter) {
 }
 
 updateHeader();
+setupMarqueeCarousel();
 window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
 window.addEventListener("resize", requestHeaderUpdate, { passive: true });
 
