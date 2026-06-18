@@ -1708,7 +1708,8 @@ figure:hover img,
 
 .footer-phone-stack {
   display: grid;
-  gap: 4px;
+  gap: 8px;
+  justify-self: start;
 }
 
 .footer-phone-text {
@@ -2615,8 +2616,13 @@ figure:hover img,
   }
 
   .footer-phone,
+  .footer-phone-stack,
   .footer-socials {
     justify-content: center;
+  }
+
+  .footer-phone-stack {
+    justify-items: center;
   }
 
   .footer-phone {
@@ -2757,9 +2763,11 @@ figure:hover img,
   .bottom-grid[data-hours-gallery] {
     display: block;
     height: min(118vw, 560px);
-    margin: 0;
+    margin-left: calc(50% - 50vw);
+    margin-right: 0;
     overflow: clip;
     position: relative;
+    width: 100vw;
   }
 
   .bottom-grid[data-hours-gallery] figure {
@@ -2809,7 +2817,7 @@ figure:hover img,
 @media (max-width: 520px) {
   .bottom-grid[data-hours-gallery] {
     height: min(124vw, 500px);
-    margin-left: 0;
+    margin-left: calc(50% - 50vw);
     margin-right: 0;
   }
 }
