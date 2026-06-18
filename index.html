@@ -3,9 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Il Cornicello</title>
+    <title>Il Cornicello | Pizzeria a Morciano di Romagna</title>
+    <meta name="description" content="Il Cornicello è la pizzeria a Morciano di Romagna con pizze sottili, impasto più alto alla napoletana, fritti e specialità da gustare in pizzeria o da asporto." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#d3072f" />
+    <meta name="geo.region" content="IT-RN" />
+    <meta name="geo.placename" content="Morciano di Romagna" />
+    <link rel="canonical" href="https://pizzeriailcornicello.it/" />
+    <link rel="alternate" hreflang="it-IT" href="https://pizzeriailcornicello.it/" />
+    <link rel="alternate" hreflang="x-default" href="https://pizzeriailcornicello.it/" />
     <link rel="icon" type="image/png" href="assets/favicon.png?v=65" />
     <link rel="apple-touch-icon" href="assets/favicon.png?v=65" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:site_name" content="Il Cornicello" />
+    <meta property="og:title" content="Il Cornicello | Pizzeria a Morciano di Romagna" />
+    <meta property="og:description" content="Pizze sottili, impasto più alto alla napoletana, fritti e specialità da gustare in pizzeria o da asporto a Morciano di Romagna." />
+    <meta property="og:url" content="https://pizzeriailcornicello.it/" />
+    <meta property="og:image" content="https://pizzeriailcornicello.it/assets/header-fire-pizza.jpeg" />
+    <meta property="og:image:alt" content="Pizza de Il Cornicello nel forno" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Il Cornicello | Pizzeria a Morciano di Romagna" />
+    <meta name="twitter:description" content="Pizze, fritti e specialità da Il Cornicello a Morciano di Romagna." />
+    <meta name="twitter:image" content="https://pizzeriailcornicello.it/assets/header-fire-pizza.jpeg" />
     <link rel="preload" as="image" href="assets/gallery-pizzaiolo-pizza.jpeg" />
     <link rel="preload" as="image" href="assets/gallery-forno-pizza.jpeg" />
     <link rel="preload" as="image" href="assets/gallery-crostini.jpeg" />
@@ -16,7 +37,52 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet" />
     <link href="https://api.fontshare.com/v2/css?f[]=author@400&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=96" />
+    <link rel="stylesheet" href="styles.css?v=98" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://pizzeriailcornicello.it/#website",
+            "url": "https://pizzeriailcornicello.it/",
+            "name": "Il Cornicello",
+            "inLanguage": "it-IT"
+          },
+          {
+            "@type": "Restaurant",
+            "@id": "https://pizzeriailcornicello.it/#restaurant",
+            "name": "Il Cornicello",
+            "url": "https://pizzeriailcornicello.it/",
+            "image": "https://pizzeriailcornicello.it/assets/header-fire-pizza.jpeg",
+            "logo": "https://pizzeriailcornicello.it/assets/favicon.png",
+            "servesCuisine": ["Pizza", "Pizzeria"],
+            "telephone": ["+390541085746", "+393337503351"],
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Piazza del Popolo, 37",
+              "postalCode": "47833",
+              "addressLocality": "Morciano di Romagna",
+              "addressRegion": "RN",
+              "addressCountry": "IT"
+            },
+            "sameAs": [
+              "https://www.instagram.com/pizzeria_il_cornicello/",
+              "https://www.facebook.com/p/il-cornicello-61568496235045/"
+            ],
+            "hasMenu": "https://pizzeriailcornicello.it/assets/menu.pdf",
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                "opens": "16:00",
+                "closes": "23:00"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <header class="site-header" data-header>
@@ -35,7 +101,7 @@
         <img class="drawer-logo" src="assets/outline-logo-white.png" alt="" loading="lazy" decoding="async" />
         <nav class="drawer-links">
           <a href="#top">Home</a>
-          <a href="assets/menu.pdf">Menù</a>
+          <a href="assets/menu.pdf" type="application/pdf">Menù</a>
           <a href="chi-siamo.html">Chi siamo</a>
         </nav>
         <div class="drawer-contact">
@@ -86,7 +152,7 @@
         <div class="section-copy centered">
           <h2 data-reveal>Scegli la pizza che fa per te</h2>
           <p data-reveal>Impasti curati, ingredienti freschi e tante proposte da gustare in pizzeria o da asporto.</p>
-          <a class="text-link" href="assets/menu.pdf">Scopri il menù</a>
+          <a class="text-link" href="assets/menu.pdf" type="application/pdf">Scopri il menù</a>
         </div>
         <div class="marquee" aria-hidden="true" data-marquee>
           <div class="marquee-track">
@@ -197,6 +263,6 @@
       </div>
     </footer>
 
-    <script src="script.js?v=96"></script>
+    <script src="script.js?v=98"></script>
   </body>
 </html>

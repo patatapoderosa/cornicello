@@ -2622,6 +2622,7 @@ figure:hover img,
   }
 
   .footer-phone-stack {
+    justify-self: center;
     justify-items: center;
   }
 
