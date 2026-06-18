@@ -1696,6 +1696,41 @@ figure:hover img,
   margin: 0;
 }
 
+.footer-minimal .footer-credit {
+  color: rgba(58, 5, 7, 0.62);
+  font-size: 13px;
+  grid-column: 1 / -1;
+  justify-self: center;
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+  position: relative;
+  transition: color 220ms ease, transform 220ms ease;
+}
+
+.footer-credit::after {
+  background: currentColor;
+  bottom: -4px;
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 260ms ease;
+  width: 100%;
+}
+
+.footer-credit:hover,
+.footer-credit:focus-visible {
+  color: var(--red);
+  transform: translateY(-2px);
+}
+
+.footer-credit:hover::after,
+.footer-credit:focus-visible::after {
+  transform: scaleX(1);
+}
+
 .footer-phone {
   align-items: flex-start;
   display: inline-flex;
