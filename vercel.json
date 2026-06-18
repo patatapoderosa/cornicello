@@ -1,6 +1,39 @@
 {
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.pizzeriailcornicello.it"
+        }
+      ],
+      "destination": "https://pizzeriailcornicello.it/",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "ilcornicello.vercel.app"
+        }
+      ],
+      "destination": "https://pizzeriailcornicello.it/",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "cornicello.vercel.app"
+        }
+      ],
+      "destination": "https://pizzeriailcornicello.it/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
