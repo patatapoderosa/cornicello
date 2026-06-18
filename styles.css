@@ -172,7 +172,7 @@ body.menu-open .menu-toggle:hover {
 
 .header-cta:hover .cta-icon::before,
 body.menu-open .header-cta:hover .cta-icon::before {
-  background-image: url("assets/outline-logo-red.png");
+  background-image: url("assets/outline-logo-red.webp");
 }
 
 .menu-toggle {
@@ -691,7 +691,7 @@ h1 {
 }
 
 .cta-icon::before {
-  background: url("assets/outline-logo-white.png") center / contain no-repeat;
+  background: url("assets/outline-logo-white.webp") center / contain no-repeat;
 }
 
 .cta-icon::after {
@@ -719,7 +719,7 @@ h1 {
 
 .button-light:hover .cta-icon::before,
 .text-link:hover .cta-icon::before {
-  background-image: url("assets/outline-logo-red.png");
+  background-image: url("assets/outline-logo-red.webp");
 }
 
 .intro-section,
@@ -833,7 +833,7 @@ h1 {
   .button-light:active .cta-icon::before,
   .text-link:hover .cta-icon::before,
   .text-link:active .cta-icon::before {
-    background-image: url("assets/outline-logo-white.png");
+    background-image: url("assets/outline-logo-white.webp");
   }
 
   .button-light:hover,
@@ -1149,7 +1149,7 @@ figure:hover img,
 }
 
 .pizza-sprite {
-  background-image: url("assets/pizze-senza-sfondo.png");
+  background-image: url("assets/pizze-senza-sfondo.webp");
   background-repeat: no-repeat;
   background-size: 300% 200%;
   display: block;
