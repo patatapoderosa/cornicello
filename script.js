@@ -14,6 +14,7 @@ const isAboutPage = document.body.classList.contains("about-page");
 const canAnimatePhotos = () => window.matchMedia("(min-width: 701px)").matches;
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const ctaNodes = [...document.querySelectorAll(".button, .text-link, .header-cta, .footer-cta")];
+const imageNodes = [...document.querySelectorAll("img")];
 const scheduleAnimationFrame = window.requestAnimationFrame
   ? (callback) => window.requestAnimationFrame(callback)
   : (callback) => window.setTimeout(() => callback(window.performance?.now?.() || Date.now()), 16);
@@ -23,6 +24,11 @@ const defaultRevealDuration = 650;
 const fastRevealDuration = 430;
 let headerUpdateQueued = false;
 let drawerCloseTimer;
+
+imageNodes.forEach((image) => {
+  image.draggable = false;
+  image.addEventListener("contextmenu", (event) => event.preventDefault());
+});
 
 function requestHeaderUpdate() {
   if (headerUpdateQueued) {
